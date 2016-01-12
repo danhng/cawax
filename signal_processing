@@ -1,0 +1,23 @@
+1. Wavelet Transform
+Problems of Short term Fourier Transform
+Frequency resolution is the same for all frequency bands.
+This is often not the case in practice
+In activity recognition analysis, human don't and can't move all the time
+Especially with old people, patients, the amount of time spent for movements and dynamic activities is significantly less compared to static activitities (sitting still, lying still compared to walking, running etc.) [REF]
+Put in other words, most of the time signal has low frequency components (nearly 0) and at some very specific points it has high frequency components (-> 1?).
+
+[CON] the MRA gives good time resolution, poor frequency resolution at high frequencies (low scales) and poor time resolution, good frequency resolution at low frequency (high scales).
+
+[CON] The wavelet analysis is a measure of similarity between a wavelet and the signal in terms of frequency components.
+a wavelet is derived from some predefined 'mother' wavelet by applying scaling and shifting operations on that mother wavelet.
+
+[DEF] the reason for 1/sqrt(s) in the CWT is to satisfy the obthonormality of the basic function which will further simplify the coefficient (representing the similarity of the time-domain signal and the wavelet) by cancelling out the norm square of the basis function ||psi||^2.
+=> Is the norm of the basis function sqrt(s)? 
+
+[CON] As scale gets higher (frequency gets lower), window length is increased => this would improve frequency resolution and reduce time resolution.
+
+
+[JOB] Find out which frequencies contribute the most to activity signals using FFT.
+
+[CON] Fun fact: Wavelet transform in some way is quite similar to the problem we are dealing with (turn on gyro when needed only). That's the problem of resource utilisation. In wavelet transform, as the scale gets higher, we process less samples (lower frequencies need less samples - Nyquist rule)
+
