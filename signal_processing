@@ -16,8 +16,35 @@ a wavelet is derived from some predefined 'mother' wavelet by applying scaling a
 
 [CON] As scale gets higher (frequency gets lower), window length is increased => this would improve frequency resolution and reduce time resolution.
 
-
 [JOB] Find out which frequencies contribute the most to activity signals using FFT.
 
 [CON] Fun fact: Wavelet transform in some way is quite similar to the problem we are dealing with (turn on gyro when needed only). That's the problem of resource utilisation. In wavelet transform, as the scale gets higher, we process less samples (lower frequencies need less samples - Nyquist rule)
+
+
+DESIGN
+-TODO: Experiment: How long can battery last with all sensors active? What if only accelerometer active?
+
+-TODO: Design Issue: Time of day taken into account?
+    i.e. not likely to run at midnight? lying, sitting preferred,
+         night: likelier activities: lying, sitting, standing, Entropy high
+         day: Entropy high
+
+- TODO: night: turn off all sensors.
+
+- TODO: Idea: queries users about the time they go to sleep, wake up.
+- TODO: Idea: at daytime, people tend to perform more active activities.
+
+- TODO: Idea: Static + y = 0: Standing/Sitting
+              Static + z = 0: Lying
+
+- TODO: Problem: imu gets alerted at the arrival of signal for active activities?
+                                                           for static activities?
+
+- TODO: Problem: for short rests between activities, is it necessary to turn off sensors?
+
+- TODO: Problem: How much time do we need for a sampex in order to derive the activity?
+        If too long? If too short?
+
+- TODO:
+
 
