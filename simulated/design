@@ -34,5 +34,30 @@ Problems:
 - Real time processing. 
 - Operating Frequency of IMUs: ~32 mHZ (See manuals) 32 millions clock cycles/second - 16MIPS.
 
-  
+
+Algorithm design:
+Features
+1. Root mean square of x y z
+2. Standard Deviation of z
+3. Mean y
+4. Integral of (z.dt) over integral of (mean z dt) (assume xo = 1)
+
+Data structure for a sample
+sample
+- x: int
+- y: int
+- z: int
+- time: date time
+- order: sample order.
+
+Signal
+<Datastructure> of sample objs.
+Datastructure
+- List or hash
+- What needed?
+- Sequentially accessing and processing ordered samples.
+- Potentially good for upsampling and down sampling
+-       Is random access applicable?
+=> Linked list
+
   
