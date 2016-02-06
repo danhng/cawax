@@ -43,7 +43,7 @@ struct LinkedList {
  * Get the node pointer at the specified index in the list
  *  - Return a null pointer if the index arg exceeds the size of the list.
  */
-Node *get(node_index index, LinkedList);
+Node *get(node_index index, LinkedList * list);
 
 /**
  * Add a sample to the end a signal list

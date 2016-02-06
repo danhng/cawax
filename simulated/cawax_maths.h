@@ -39,4 +39,6 @@ acc standardDeviation(acc * input, size_t  count);
  */
 vel_g integral(acc * input, acc base, size_t count);
 
+
+
 #endif //SIMULATED_CAWAX_MATHS_H
