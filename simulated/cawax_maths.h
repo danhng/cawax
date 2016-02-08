@@ -4,6 +4,7 @@
 
 #include "cawax_datastructs.h"
 
+
 #ifndef SIMULATED_CAWAX_MATHS_H
 #define SIMULATED_CAWAX_MATHS_H
 

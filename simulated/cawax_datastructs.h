@@ -6,6 +6,7 @@
 #include <time.h>
 #include "omapi.h"
 #include <stdio.h>
+#define _CRT_SECURE_NO_WARNINGS
 
 #ifndef SIMULATED_DATASTRUCTS_H
 #define SIMULATED_DATASTRUCTS_H
@@ -14,30 +15,42 @@ typedef double acc;
 typedef unsigned long sample_th;
 typedef unsigned long node_index;
 
-enum dimension {X, Y, Z};
+typedef enum {X, Y, Z} dimension;
 
 /**
  * Represent a sample obtained from the device
  */
-struct Sample {
+typedef struct sample {
     acc x;
     acc y;
     acc z;
     OM_DATETIME time;
     sample_th order; // order as in time domain
-};
+} Sample;
 
-struct Node {
+typedef struct node {
     Sample sample;
-    Sample *next;
-    Sample *prev;
-};
+    struct node *next;
+    struct node *prev;
+} Node;
 
-struct LinkedList {
+typedef struct linkedList {
     long count;
-    Sample *head;
-};
+    Node *head;
+} LinkedList;
 // operations on linked list
+
+/*
+Make a new Node for a sample 
+Return: Pointer to the newly created node
+*/
+Node * makeNode(Sample sample);
+
+/*
+Make a new list with NULL head and 0 count
+Return: Pointer to the newly created list
+*/
+LinkedList * makeList();
 
 /**
  * Get the node pointer at the specified index in the list
@@ -58,30 +71,31 @@ LinkedList *add(Sample sample, LinkedList *list);
  *  - Create the node for the new sample
  *  - Update the neighbor nodes as to the newly created node
  */
-LinkedList *add(node_index index, Sample sample, LinkedList *list);
+LinkedList *addI(node_index index, Sample sample, LinkedList *list);
 
 /**
  * Remove (unlink) a sample from the end of the signal list based on the time and the sample order
  *  - Update the node before the last node
  *  - Free the last node
  */
-LinkedList *remove(LinkedList *list);
+LinkedList * removeI(LinkedList *list);
 
 /**
  * Get the time domain series for a specific dimension from {start} (inclusive) to (inclusive) {end}
  *  - If {start} = 0 then we start from the beginning
- *  - If {end} = 0 then we end at the tail (count - 1)
+ *  - If {end} out of bound (>= list count) then {end} is tail (count - 1)
+Return a sub series array terminated by 100
  *
  */
 acc *getSubSeries(dimension d, node_index start, node_index end, LinkedList *list);
 
 /**
  * toString functions
- *  - Store the formatted string representation the struct to the buffer in {buf}
+ *  - print out the string representation of the target struct
  */
-int toString(char *buf, Sample *sample);
-int toString(char *buf, Node *node);
-int toString(char *buf, LinkedList *list);
+int toStringSample(Sample *sample);
+int toStringNode(Node *node);
+int toStringList(LinkedList *list);
 
 
 #endif //SIMULATED_DATASTRUCTS_H
