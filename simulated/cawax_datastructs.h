@@ -89,12 +89,31 @@ Return a sub series array terminated by 100
  */
 acc *getSubSeries(dimension d, node_index start, node_index end, LinkedList *list);
 
-/**
- * toString functions
- *  - print out the string representation of the target struct
+/*
+Free the linked list: free all memory blocks allocated for the list including:
+ - All the nodes.
+ - The list.
+*/
+void freeLinkedList(LinkedList * list);
+
+/*
+Empty the linked list
+ - Free all the nodes but retain the list.
+*/
+LinkedList * emptyLinkedList(LinkedList * list);
+
+/*
+Print out the string representation of the target Sample struct
  */
 int toStringSample(Sample *sample);
+
+/*
+Print out the string representation of the target Node struct
+*/
 int toStringNode(Node *node);
+/*
+Print out the string representation of the target LinkedList struct
+*/
 int toStringList(LinkedList *list);
 
 

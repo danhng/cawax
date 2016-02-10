@@ -3,6 +3,7 @@
 //
 
 #include "cawax_datastructs.h"
+#include "cawax.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -151,8 +152,41 @@ acc * getSubSeries(dimension d, node_index start, node_index end, LinkedList * l
 		count++;
 		current = current->next;
 	}
-	sub[count] = 100; // 100 g should be unreachable 
+	sub[count] = TERMINATION_VALUE; // 0x1111 g should be unreachable 
 	return sub;
+}
+
+void freeLinkedList(LinkedList * list)
+{
+	if (!list)
+		return;
+	emptyLinkedList(list);
+	free(list);
+	return;
+}
+
+LinkedList * emptyLinkedList(LinkedList * list)
+{
+	if (!list)
+		return list;
+	
+	if (!(list->head)) {
+		printf("Warn: emptying list %p with NULL head.", list);
+		return list;
+	}
+
+	// free the nodes starting from the tail to ensure list consistency in the event of failure.
+	Node * current = get(list->count - 1, list);
+	while (current = current->prev) {
+		free(current->next);
+		list->count--;
+	}
+
+	// reset list fields
+	list->head = NULL;
+	list->count = 0;
+
+	return list;
 }
 
 int toStringSample(Sample * sample)

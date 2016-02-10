@@ -143,9 +143,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cawax_datastructs.c" />
+    <ClCompile Include="cawax_maths.c" />
     <ClCompile Include="cawax_test.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cawax.h" />
     <ClInclude Include="cawax_datastructs.h" />
     <ClInclude Include="cawax_maths.h" />
     <ClInclude Include="omapi.h" />

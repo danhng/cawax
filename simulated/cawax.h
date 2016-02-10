@@ -1,0 +1,4 @@
+#pragma once
+#define NOT_IMPLEMENTED 0
+#define DEFAULT_PARAMETER_VALUE  -1
+#define TERMINATION_VALUE  0x1111
