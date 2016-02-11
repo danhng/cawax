@@ -145,11 +145,13 @@
     <ClCompile Include="cawax_datastructs.c" />
     <ClCompile Include="cawax_maths.c" />
     <ClCompile Include="cawax_test.c" />
+    <ClCompile Include="cawax_datareader.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cawax.h" />
     <ClInclude Include="cawax_datastructs.h" />
     <ClInclude Include="cawax_maths.h" />
+    <ClInclude Include="cawax_datareader.h" />
     <ClInclude Include="omapi.h" />
   </ItemGroup>
   <ItemGroup>

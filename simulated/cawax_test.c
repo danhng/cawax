@@ -1,5 +1,6 @@
 #include "cawax_datastructs.h"
 #include "cawax_maths.h"
+#include "cawax_datareader.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -9,13 +10,30 @@ int testRootMeanSquare();
 int testMean();
 int testStandardDeviation();
 int testIntegral();
+int testTimeFormat();
+int testCountLines();
 
 int main(void) {
 	//testMem();
 	//testRootMeanSquare();
 	//testMean();
-	testStandardDeviation();
+	//testStandardDeviation();
+	//testTimeFormat();
+	testCountLines();
 	getchar();
+}
+
+int testCountLines() {
+	char * filename = "saw10.csv";
+	countLines(filename);
+}
+
+int testTimeFormat() {
+	TIME_MSM time = TIME_FROM_MSM(29, 30, 100);
+	printf("time 29:30.100 is: %d\n", time);
+	printf("min is: %d\n", TIME_GET_MINUTE(time));
+	printf("sec is: %d\n", TIME_GET_SECOND(time));
+	printf("msec is: %d\n", TIME_GET_MILISECOND(time));
 }
 
 int testIntegral() {
@@ -40,10 +58,10 @@ int testIntegral() {
 		,0.991386469
 		,0.993776789
 		, TERMINATION_VALUE
-	}
+	};
 		//printf("Integral of input: %p: %.3f", input, integral(input, 1, ))
 		
-
+	return;
 }
 
 int testStandardDeviation() {

@@ -48,7 +48,7 @@ acc standardDeviation(acc * input, size_t count)
 	return  sqrt(sqrSum / i);
 }
 
-vel_g integral(acc * input, acc base, size_t count)
+vel_g integral(LinkedList * signal, acc base, size_t count)
 {
 	/*acc integral = 0;
 	acc current = 0;

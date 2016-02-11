@@ -24,6 +24,9 @@
     <ClCompile Include="cawax_maths.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cawax_datareader.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cawax_datastructs.h">
@@ -36,6 +39,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="cawax.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cawax_datareader.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
