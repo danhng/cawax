@@ -10,6 +10,15 @@ Operations used to read csv data files generated from waxrec.
 #pragma once
 
 #include "cawax_datastructs.h"
+#define SAMPLE_BYTES 25 // default is just 3 acc values of 8 bytes each
+
+// default is WAX9 
+
+#define TIME_INDEX 1 
+#define SAMPLE_INDEX 2
+#define X_INDEX 4
+#define Y_INDEX 5
+#define Z_INDEX 6
 
 #ifdef __WAX9 
 	#define TIME_INDEX 1
@@ -17,18 +26,27 @@ Operations used to read csv data files generated from waxrec.
 	#define X_INDEX 4
 	#define Y_INDEX 5
 	#define Z_INDEX 6
+	#define SAMPLE_BYTES 121
+
 #else
 	#ifdef __AX3
 		#define TIME_INDEX 0
 		#define X_INDEX 1
 		#define Y_INDEX 2
 		#define Z_INDEX 3
+#define SAMPLE_BYTES 33
 	#endif // __AX3
 #endif 
 
 #ifndef  SAMPLE_INDEX
 	#define SAMPLE_INDEX -1
 #endif
+
+#define INDEX_A_TARGET_TOKEN(index)		(((index) == TIME_INDEX)  \
+									 ||  ((index) == SAMPLE_INDEX) \
+									 ||  ((index) == X_INDEX) \
+									 ||  ((index) == Y_INDEX) \
+									 ||  ((index) == Z_INDEX)) 
 
 
 /*
@@ -43,7 +61,7 @@ int countLines(const char * filename);
 Read {count} lines from the csv file (starting from the first line) into a LinkedList struct.
  - if {count} = {DEFAULT_PARAMETER_VALUE} then read the whole file.
 */
-LinkedList * readFile(const char * filename, size_t count);
+LinkedList * readFile(const char * filename, int count);
 
 
 
