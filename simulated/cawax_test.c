@@ -12,6 +12,7 @@ int testStandardDeviation();
 int testIntegral();
 int testTimeFormat();
 int testCountLines();
+int testReadFile();
 
 int main(void) {
 	//testMem();
@@ -19,21 +20,31 @@ int main(void) {
 	//testMean();
 	//testStandardDeviation();
 	//testTimeFormat();
-	testCountLines();
+	//testCountLines("saw10.csv");
+
+	int linesRead = 0;
+	testReadFile("saw10.csv");
+
+
 	getchar();
 }
 
-int testCountLines() {
-	char * filename = "saw10.csv";
+int testReadFile(const char * filename) {
+	int linesRead = 0;
+	LinkedList * signal = readFile(filename, 10, &linesRead);
+	toStringList(signal);
+}
+
+int testCountLines(const char * filename) {
 	countLines(filename);
 }
 
 int testTimeFormat() {
-	TIME_MSM time = TIME_FROM_MSM(29, 30, 100);
+	CAWAX_TIME_MSM time = CAWAX_TIME_FROM_MSM(29, 30, 100);
 	printf("time 29:30.100 is: %d\n", time);
-	printf("min is: %d\n", TIME_GET_MINUTE(time));
-	printf("sec is: %d\n", TIME_GET_SECOND(time));
-	printf("msec is: %d\n", TIME_GET_MILISECOND(time));
+	printf("min is: %d\n", CAWAX_TIME_GET_MINUTE(time));
+	printf("sec is: %d\n", CAWAX_TIME_GET_SECOND(time));
+	printf("msec is: %d\n", CAWAX_TIME_GET_MILISECOND(time));
 }
 
 int testIntegral() {

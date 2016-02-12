@@ -27,6 +27,9 @@
     <ClCompile Include="cawax_datareader.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cawax.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cawax_datastructs.h">

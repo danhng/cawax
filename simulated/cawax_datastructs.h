@@ -21,11 +21,11 @@ typedef enum {X, Y, Z} dimension;
  * Represent a sample obtained from the device
  */
 typedef struct sample {
-    acc x;
+	OM_DATETIME time;
+	sample_th order; // order as in time domain
+	acc x;
     acc y;
     acc z;
-    OM_DATETIME time;
-    sample_th order; // order as in time domain
 } Sample;
 
 typedef struct node {

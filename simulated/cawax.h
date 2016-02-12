@@ -6,6 +6,7 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 */
 
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
 
 #define NOT_IMPLEMENTED 0
 
@@ -21,7 +22,12 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 
 #define SAMPLE_COMPONENTS_COUNT 5 // time, order, x, y, z
 
+#define SAMPLE_COMPONENT_SIZE 15 // number of bytes needed to store each token (in string format)
+
 #define SAMPLE_LONGEST_TOKEN_SIZE 11 // longest token in the sample string
+
+
+
 
 /*
 TIME def (22 bits) of a sample extracted from the output file including:
@@ -29,14 +35,21 @@ TIME def (22 bits) of a sample extracted from the output file including:
  - Second
  - Milisecond
 */
-typedef long TIME_MSM;
-#define TIME_FROM_MSM(minute, second, milisec) \
-		(((TIME_MSM)(minute)   << 16)) \
-	   |(((TIME_MSM)(second)   << 10)) \
-	   |(((TIME_MSM)(milisec)       )) 
-#define TIME_GET_MINUTE(time_msm)		((unsigned int) (((time_msm) >> 16) & 0x1f ))
-#define TIME_GET_SECOND(time_msm)		((unsigned int) (((time_msm) >> 10) & 0x1f ))
-#define TIME_GET_MILISECOND(time_msm)	((unsigned int) (((time_msm)	  ) & 0x3ff))
+typedef long CAWAX_TIME_MSM;
+#define CAWAX_TIME_FROM_MSM(minute, second, milisec) \
+		(((CAWAX_TIME_MSM)(minute)   << 16)) \
+	   |(((CAWAX_TIME_MSM)(second)   << 10)) \
+	   |(((CAWAX_TIME_MSM)(milisec)       )) 
+#define CAWAX_TIME_GET_MINUTE(time_msm)		((unsigned int) (((time_msm) >> 16) & 0x1f ))
+#define CAWAX_TIME_GET_SECOND(time_msm)		((unsigned int) (((time_msm) >> 10) & 0x1f ))
+#define CAWAX_TIME_GET_MILISECOND(time_msm)	((unsigned int) (((time_msm)	  ) & 0x3ff))
+
+/*
+Return a string representation of the numeric time in format mm:ss:lll
+*/
+char * cawaxTimeToString(const CAWAX_TIME_MSM numericTime, char * buf);
+
+
 
 
 
