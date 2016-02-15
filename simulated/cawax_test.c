@@ -22,6 +22,9 @@ int testCountLines(const char * filename);
 int testReadFile(const char * filename);
 int testTimeDiff(CAWAX_TIME_MSM arg1, CAWAX_TIME_MSM arg2);
 int testTrapezoid(acc sample1, acc sample2, CAWAX_TIME_MSM time1, CAWAX_TIME_MSM time2, sample_th order1, sample_th order2);
+int testGetComponent();
+int testJump();
+int testSimpsonSingle();
 
 int main(void) {
 	//testMem();
@@ -32,9 +35,43 @@ int main(void) {
 	//testCountLines("saw10.csv");
 	//testReadFile("saw10.csv");
 	//testTimeDiff(1959312, 1981640);
-	 
-	testTrapezoid(0.494282, -0.48618, 1959312, 1959312 + 500, 1, 2);
+	//testTrapezoid(0.494282, -0.48618, 1959312, 1959312 + 500, 1, 2);
+	//testGetComponent();
+	//testJump();
+
+	testSimpsonSingle();
 	getchar();
+}
+
+int testSimpsonSingle() {
+	int linesRead = 0;
+	LinkedList * signal = readFile("saw10.csv", 10, &linesRead);
+	//toStringList(signal);
+
+	simpsonSingle(signal, 1, 1, CINDEX_X, NULL, 0);
+	printf("After being processed signal: \n");
+	toStringList(signal);
+}
+
+int testJump() {
+	int linesRead = 0;
+	LinkedList * signal = readFile("saw10.csv", 10, &linesRead);
+	toStringList(signal);
+
+	int jumpVar = 177;
+	Node * jumpedForward = jump(signal->head, jumpVar);
+	Node * jumpedPrev = jump(jumpedForward, jumpVar * -1);
+	printf("start is: %p\njumpedForward by %d is: %p\njumpedPrev by %d is (should get back to start): %p\nVerification: %d\n", 
+		signal->head, jumpVar, jumpedForward, jumpVar, jumpedPrev, jumpedPrev == signal->head);
+}
+
+
+int testGetComponent() {
+	Sample sample = { 0, 0, 0, 0, 0 };
+	printf("x address is: %p\nx address from getComponent is: %p\n", &sample.x, getComponent(&sample, CINDEX_X));
+	acc * x_ptr = (acc *)getComponent(&sample.x, CINDEX_X);
+	*x_ptr = 1;
+	printf("new x changed using getComponent is (should be 1): %.3f\n", *x_ptr);
 }
 
 int testTrapezoid(acc sample1, acc sample2, CAWAX_TIME_MSM time1, CAWAX_TIME_MSM time2, sample_th order1, sample_th order2) {

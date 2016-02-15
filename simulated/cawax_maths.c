@@ -159,7 +159,7 @@ current signal = head of signal;
 next signal = head of signal + step;
 tail;
 // TODO handle last pair (head signal in bound, next signal could be out of bound -> limit to the tail)
-while (next signal <> tail) 
+while (current signal <> tail) 
 	tmp = current;
 	while (next->time = current->time) // handle time duplicated samples
 		tmp = (current + next) / 2;
@@ -173,17 +173,88 @@ while (next signal <> tail)
 		next signal = current signal + step;
 return simpson;
 */
-vel_g * simpson(LinkedList * signal, size_t step, acc base, int inputTargets, vel_g * buf)
-{
+vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, int target, vel_g * buf);
+
+vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, int target, vel_g * buf, char recoverSignal) {
 	if (base < 0) {
-		fprintf(stderr, "Calling simpson needs non-negative base. %d given.\n", base);
-		exit(EXIT_FAILURE);
+		printf("Calling simpson requires non-negative base. %d given.\n", base);
+		return ERROR_POSITVE_OUTPUT;
 	}
+
+	if (signal->count == 0 || !(signal->head)) {
+		printf("Calling simpson requires non-empty signal. however either count is 0: %d or head is null: %p\n", signal->count, signal->head);
+		return ERROR_POSITVE_OUTPUT;
+	}
+
+	Node * current = signal->head;
+	char changed = 0;
+
+	// process all samples based on {base} parameter
+	if (base != 0)
+	{
+		printf("Processing signal against base %.3f ...\n", base);
+		//TODO: recover the signal later if recover Signal is set.
+		changed = 1;
+		while (current->next) {
+			acc * target_ptr = (acc *)getComponent(&(current->sample), target);
+			*target_ptr += base;
+			current = current->next;
+		}
+	}
+
+	acc simpson = 0;
+	current = signal->head;
+	Node * next = jump(current, step);
+	Node * tail = jump(current, signal->count - 1);
+	printf("tail is: %p\n", tail);
+	//while (current signal <> tail)
+	//	tmp = current;
+	//while (next->time = current->time) // handle time duplicated samples
+	//	tmp = (current + next) / 2;
+	//next = next + step;
+	//calculate the trapezoid(tmp, next signal, base);
+	//add the trapezoid to the simpson;
+	//current signal = next signal;
+	//if (tail - current signal) < step
+	//	next signal = tail;
+	//else
+	//	next signal = current signal + step;
+	//return simpson;
+
+	while (current != tail) {
+		// get the tmp node
+		Node * tmp = makeNode(current->sample);
+
+		//handling duplications (based on sample time)
+		// duplicate counter
+		int dups = 1;
+		// initially dupsSum is the first encountered node
+		acc dupsSum = *((acc *)getComponent(&(tmp->sample), target));
+		while (next->sample.time == current->sample.time) {
+			// increase the dups counter
+			++dups;
+			dupsSum = *((acc *)getComponent(&(current->sample), target)) + *((acc *)getComponent(&(next->sample), target));
+			next = jump(next, step);
+		}
+		char timeBuf[10];
+		printf("Dups counter at time %s: %d\n", cawaxTimeToString(current->sample.time, timeBuf), dups);
+		// DO CALCULATION STUFF HERE;
+		// next current and next pair
+		current = next;
+		// if next would be out of bound then assign tail to next, else assign the jumping result to next
+		if (!(next = jump(current, step))) {
+			printf("warn: simpsonSingle:  next would be out of bound on current %p, assigning tail %p to next.\n", current, tail);
+			next = tail;
+		}
+	}
+		return NOT_IMPLEMENTED_PTR;
+}
+
+vel_g * simpson(LinkedList * signal, size_t step, acc base, int inputTargets, vel_g * buf, char receoverSignal)
+{
 	
-	//while ()
-
-
-
+	return NOT_IMPLEMENTED_PTR;
+	
 }
 
 

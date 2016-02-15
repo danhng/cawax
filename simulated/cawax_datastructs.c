@@ -7,6 +7,53 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void * getComponent(Sample * sample, int componentIndex) {
+	if (!sample) {
+		fprintf(stderr, "Calling getComponent needs a valid Sample pointer. %p given.\n", sample);
+		return NULL;
+	}
+
+	if (componentIndex & CINDEX_X) {
+		return &(sample->x);
+	}
+	if (componentIndex & CINDEX_Y) {
+		return &(sample->y);
+	}
+	if (componentIndex & CINDEX_Z) {
+		return &(sample->z);
+	}
+	if (componentIndex & CINDEX_ORDER) {
+		return &(sample->order);
+	}
+	if (componentIndex & CINDEX_TIME) {
+		return &(sample->time);
+	}
+
+	fprintf(stderr, "Calling getComponent needs a valid componentIndex. %x given.\n", componentIndex);
+	return NULL;
+}
+
+Node * jump(const Node * depart, int step) {
+	if (!depart) {
+		fprintf(stderr, "Calling jump requires a non-null Node ptr, %p given. \n", depart);
+		return ERROR_PTR_OUTPUT;
+	}
+	char forw = step >= 0;
+	step = abs(step);
+	int count = 0;
+	Node * current = depart;
+	while (count++ < step && current) {
+		current = forw ? current->next : (step == 0) ? current : current->prev;
+	}
+	// count now should be 1 greater than step
+	if (count < step) {
+		printf("Calling jump on %p step %d: Cannot reach the destination. Stopped at step %d.\n", depart, step, count);
+	}
+	//printf("count is: %d\n", count);
+	return current;
+}
+
+
 LinkedList * makeList() {
 	LinkedList * list;
 	int s = sizeof(Node *) + sizeof(long) ;
@@ -41,15 +88,10 @@ Node * get(node_index index, LinkedList * list) {
 	printf("Calling get at index %d of list %p size %d\n", index, list, list->count);
 	int count = 0;
 	if (index < 0 || index >= list->count) {
-		printf("err: Illegal index: %d when accessing list %p of size %d\n", index, list, list->count);
+		printf("err: Illegal index: %d when accessing list %p of size %d, max index: %d\n", index, list, list->count, list->count -1 );
 		return NULL;
 	}
-	Node * current = list->head;
-	while (count < index) {
-		current = current->next;
-		count++;
-	}
-	return current;
+	return jump(list->head, index);
 }
 
 /**

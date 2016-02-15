@@ -11,13 +11,7 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 #ifndef SIMULATED_CAWAX_MATHS_H
 #define SIMULATED_CAWAX_MATHS_H
 
-// define all types of input that might be fed into some particular series processing procedure.
-#define INPUT_TARGET_X		1;
-#define INPUT_TARGET_Y		2;
-#define INPUT_TARGET_Z		4;
-#define INPUT_TARGET_RMQ	8;
-#define INPUT_TARGET_MEAN	16;
-// ... subject to be expanded.
+
 
 // https://en.wikipedia.org/wiki/Gravitational_acceleration
 #define GRAVITY_ACC = 9.80665;
@@ -75,6 +69,8 @@ METHOD SIGNATURE
  Return:
  - vel_g * : the buf array specified in the parameter;
  */
-vel_g * simpson(LinkedList * signal, size_t step, acc base, int inputTargets, vel_g * buf);
+vel_g * simpson(LinkedList * signal, size_t step, acc base, int inputTargets, vel_g * buf, char recoverSignal);
+
+vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, int target, vel_g * buf, char recoverSignal);
 
 #endif //SIMULATED_CAWAX_MATHS_H

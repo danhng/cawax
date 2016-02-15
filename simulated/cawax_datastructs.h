@@ -28,6 +28,15 @@ typedef struct sample {
     acc z;
 } Sample;
 
+/* 
+Get the address of the queried component
+
+Parameters:
+ - Sample * sample: the ptr to the sample from which component is retrieved.
+ - int componentIndex: the index of the component as defined in 
+*/
+void * getComponent(Sample * sample, int componentIndex);
+
 typedef struct node {
     Sample sample;
     struct node *next;
@@ -41,8 +50,23 @@ typedef struct linkedList {
 // operations on linked list
 
 /*
-Make a new Node for a sample 
-Return: Pointer to the newly created node
+Jump from one node to another node.
+
+PARAMS:
+ - Node * depart: the node from which the jump is performed.
+ - int step: how far should the jump be. (Note: if step < 0 then we jump backward). 
+RETURN:
+ - Node *: The pointer of the destination node.
+EXAMPLE:
+ - A step of 1 will return the next node or NULL if there's no next node (tail).
+ - A step of -1 will return the prev node or NULL if there's no prev node (head).
+
+*/
+Node * jump(Node * depart, int step);
+
+/*
+Make a new Node for a sample.
+RETURN: Pointer to the newly created node
 */
 Node * makeNode(Sample sample);
 

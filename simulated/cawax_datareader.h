@@ -40,7 +40,7 @@ Operations used to read csv data files generated from waxrec.
 
 #ifndef  SAMPLE_INDEX
 	#define SAMPLE_INDEX -1
-#endif
+#endif			
 
 #define INDEX_A_TARGET_TOKEN(index)		(((index) == TIME_INDEX)  \
 									 ||  ((index) == SAMPLE_INDEX) \
