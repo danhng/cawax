@@ -1,3 +1,10 @@
+/*
+@author Danh Thanh Nguyen <d.t.nguyen@newcastle.ac.uk>
+
+Many code patterns in this project are thanks to the openmovement project of Newcastle University.
+See: https://github.com/digitalinteraction/openmovement for more details.
+*/
+
 #include "cawax_datastructs.h"
 #include "cawax_maths.h"
 #include "cawax_datareader.h"
@@ -11,8 +18,10 @@ int testMean();
 int testStandardDeviation();
 int testIntegral();
 int testTimeFormat();
-int testCountLines();
-int testReadFile();
+int testCountLines(const char * filename);
+int testReadFile(const char * filename);
+int testTimeDiff(CAWAX_TIME_MSM arg1, CAWAX_TIME_MSM arg2);
+int testTrapezoid(acc sample1, acc sample2, CAWAX_TIME_MSM time1, CAWAX_TIME_MSM time2, sample_th order1, sample_th order2);
 
 int main(void) {
 	//testMem();
@@ -21,12 +30,23 @@ int main(void) {
 	//testStandardDeviation();
 	//testTimeFormat();
 	//testCountLines("saw10.csv");
-
-	int linesRead = 0;
-	testReadFile("saw10.csv");
-
-
+	//testReadFile("saw10.csv");
+	//testTimeDiff(1959312, 1981640);
+	 
+	testTrapezoid(0.494282, -0.48618, 1959312, 1959312 + 500, 1, 2);
 	getchar();
+}
+
+int testTrapezoid(acc sample1, acc sample2, CAWAX_TIME_MSM time1, CAWAX_TIME_MSM time2, sample_th order1, sample_th order2) {
+	printf("Testing trapezoid \n");
+	printf("Sample 1: %.6f / %d / %d\n", sample1, time1, order1);
+	printf("Sample 2: %.6f / %d / %d\n", sample2, time2, order2);
+
+	printf("Trapezoid = %.6f\n", trapezoid(sample1, sample2, time1, time2, order1, order2));
+}
+
+int testTimeDiff(CAWAX_TIME_MSM arg1, CAWAX_TIME_MSM arg2) {
+	printf("time1: %d\ntime2: %d\ndiff in mili: %d\n", arg1, arg2, cawaxTimeDiff(arg1, arg2));
 }
 
 int testReadFile(const char * filename) {
@@ -70,7 +90,7 @@ int testIntegral() {
 		,0.993776789
 		, TERMINATION_VALUE
 	};
-		//printf("Integral of input: %p: %.3f", input, integral(input, 1, ))
+		//printf("Integral of input: %p: %.3f", input, simpson(input, 1, ))
 		
 	return;
 }

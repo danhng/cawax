@@ -1,3 +1,10 @@
+/*
+@author Danh Thanh Nguyen <d.t.nguyen@newcastle.ac.uk>
+
+Many code patterns in this project are thanks to the openmovement project of Newcastle University.
+See: https://github.com/digitalinteraction/openmovement for more details.
+*/
+
 #include "cawax_datareader.h"
 #include "cawax.h"
 #include <string.h>
@@ -95,7 +102,7 @@ LinkedList * readFile(const char * filename, int count, int * samplesRead)
 		if (readTokens(tokens, currentSample)) {
 			samplesCounter++;
 			for (int i = 0; i < SAMPLE_COMPONENTS_COUNT; i++) {
-				//printf("token %d: %s\n", i, tokens[i]);
+				printf("token %d: %s\n", i, tokens[i]);
 			}
 
 			/*DO THE DATA PARSING*/
@@ -114,10 +121,11 @@ LinkedList * readFile(const char * filename, int count, int * samplesRead)
 			//printf("mili_s is: %s\n", mili_s);
 			mili = strtol(mili_s, &tl, 10) *  pow(10, 3 - strlen(mili_s));
 			free(mili_s);
-			//printf("min: %d, sec: %d, %mili: %d\n", min, sec, mili);
+			printf("min: %d, sec: %d, %mili: %d\n", minute, sec, mili);
 
 			CAWAX_TIME_MSM time = CAWAX_TIME_FROM_MSM(minute, sec, mili);
-			//printf("********** Time extracted is: %d \n", time);
+			//printf("\n********** Time extracted is: %d, revalidate: min is: %d, sec is: %d, mili is: %d \n", time, 
+			//	CAWAX_TIME_GET_MINUTE(time), CAWAX_TIME_GET_SECOND(time), CAWAX_TIME_GET_MILISECOND(time));
 			/* =============================================================
 			parse the order
 			================================================================*/

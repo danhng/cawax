@@ -38,9 +38,41 @@ Problems:
 Algorithm design:
 Features
 1. Root mean square of x y z
-2. Standard Deviation of z
+2. Standard Deviation of x y z
 3. Mean y
-4. Integral of (z.dt) over integral of (mean z dt) (assume xo = 1)
+4. Integral of (z.dt) over integral of (mean z dt) (assume xo = 1). 
+    Integral of y over integral of (mean y dt) 	
+
+Movement characteristics:
+StSd: RMQ symmetric: Integral of 2 symmetric sides are close. 
+	  y symmetric: 
+	  High standard deviation compared to mean.
+	  Period: typically 1 second
+	  
+Walking: Same as StSd but the 2 halves are in reverse order
+	  Similar to StSd
+	  Shorter Period
+	  High Standard deviation
+
+Running:
+	  High standard deviation
+	  Short period
+
+	  => Dynamic activity:
+	 High SD
+	 High Integral compared to stable rest position.
+	 RMQ are generally not close to 1.
+	EXperiment: Able to calculate velocity? Integral * 9.8 / 1000
+	
+
+	=> Static activities:
+	Low SD
+	Low Integral
+	RMQ close to 1
+	Able to calculate veloctity?
+
+
+Walking: Considerable 
 
 Data structure for a sample
 sample
