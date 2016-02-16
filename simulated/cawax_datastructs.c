@@ -58,7 +58,7 @@ LinkedList * makeList() {
 	LinkedList * list;
 	int s = sizeof(Node *) + sizeof(long) ;
 	list = (LinkedList *) malloc(s);
-	printf("Allocating %d bytes to a new LinkedList at %p\n", s, list);
+	//printf("Allocating %d bytes to a new LinkedList at %p\n", s, list);
 
 	list->head = NULL;
 	list->count = 0;
@@ -70,7 +70,7 @@ Node * makeNode(Sample sample)
 	Node * node;
 	int s = sizeof sample + sizeof node * 2;
 	node = (Node *) malloc(s);
-	printf("Allocating %d bytes to a new Node at %p\n", s, node);
+	//printf("Allocating %d bytes to a new Node at %p\n", s, node);
 
 	node->sample = sample;
 
@@ -85,7 +85,7 @@ Node * makeNode(Sample sample)
  *  - Return a null pointer if the index arg exceeds the size of the list.
  */
 Node * get(node_index index, LinkedList * list) {
-	printf("Calling get at index %d of list %p size %d\n", index, list, list->count);
+	//printf("Calling get at index %d of list %p size %d\n", index, list, list->count);
 	int count = 0;
 	if (index < 0 || index >= list->count) {
 		printf("err: Illegal index: %d when accessing list %p of size %d, max index: %d\n", index, list, list->count, list->count -1 );
@@ -111,7 +111,7 @@ LinkedList * add(Sample sample, LinkedList *list) {
  * Return: the list with the sample added at the exact index specified in the list
  */
 LinkedList * addI(node_index index, Sample sample, LinkedList *list) {
-	printf("Calling addI with index: %d, list count: %d\n", index, list->count);
+	//printf("Calling addI with index: %d, list count: %d\n", index, list->count);
     if (index > list->count) {
         printf("Error: index to add %d exceeds size of linked list at %p. List modification omitted.\n", index, list);
         return list;
@@ -122,14 +122,14 @@ LinkedList * addI(node_index index, Sample sample, LinkedList *list) {
 	// old node at index not available?
 	// first node?
 	if (list->count == 0) {
-		printf("List %p: add case: first node.\n", list);
+		//printf("List %p: add case: first node.\n", list);
 		list->head = newNode;
 		list->count++;
 		return list;
 	}
 	// append ?
 	if (index == list->count) {
-		printf("List %p: add case: append.\n", list);
+		//printf("List %p: add case: append.\n", list);
 		Node * tail = get(list->count - 1, list);
 		//update newNode
 		newNode->prev = tail;
@@ -142,10 +142,10 @@ LinkedList * addI(node_index index, Sample sample, LinkedList *list) {
 	}
 	// old node at index available?
 	Node * old = get(index, list);
-	printf("getting old node at index %d of list %p with %d nodes: %p\n", index, list, list->count, old);
+	//printf("getting old node at index %d of list %p with %d nodes: %p\n", index, list, list->count, old);
 	// new head ?
 	if (index == 0) {
-		printf("List %p: add case: new head.\n", list);
+		//printf("List %p: add case: new head.\n", list);
 		//update newNode
 		newNode->prev = NULL;
 		newNode->next = old;
@@ -157,7 +157,7 @@ LinkedList * addI(node_index index, Sample sample, LinkedList *list) {
 		return list;
 	}
 	// sandwich?
-	printf("List %p: add case: sandwich\n", list);
+	//printf("List %p: add case: sandwich\n", list);
 	//get involved nodes;
 	Node * prev_old = old->prev;
 	// update the new node 

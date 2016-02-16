@@ -102,7 +102,7 @@ LinkedList * readFile(const char * filename, int count, int * samplesRead)
 		if (readTokens(tokens, currentSample)) {
 			samplesCounter++;
 			for (int i = 0; i < SAMPLE_COMPONENTS_COUNT; i++) {
-				printf("token %d: %s\n", i, tokens[i]);
+				printf("token %d: %-10s // ", i, tokens[i]);
 			}
 
 			/*DO THE DATA PARSING*/

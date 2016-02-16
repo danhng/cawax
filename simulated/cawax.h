@@ -7,6 +7,7 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 #pragma once
 
 #include <math.h>
+#include "cawax_datastructs.h"
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -45,7 +46,6 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 #define CINDEX_ORDER 0x20
 #define CINDEX_TIME  0x40
 // ... subject to be expanded.
-
 
 /*
 TIME def (22 bits) of a sample extracted from the output file including:

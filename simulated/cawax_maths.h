@@ -5,18 +5,22 @@ Many code patterns in this project are thanks to the openmovement project of New
 See: https://github.com/digitalinteraction/openmovement for more details.
 */
 
-#include "cawax_datastructs.h"
-#include "cawax.h"
-
 #ifndef SIMULATED_CAWAX_MATHS_H
 #define SIMULATED_CAWAX_MATHS_H
 
+#include "cawax.h"
 
 
 // https://en.wikipedia.org/wiki/Gravitational_acceleration
-#define GRAVITY_ACC = 9.80665;
+#define GRAVITY_ACC 9.80665
 
 #define TRAPEZOID_POLAR_SAME(h1, h2, delta) ((delta) * ((h1) + (h2)) / 2)
+
+// units of integration
+
+#define UNIT_G_PER_MILI 1
+
+#define UNIT_METER_PER_SEC 2
 
 // velocity delta based upon g (not m/s^2 but gm/s^2)
 typedef long vel_g;
@@ -60,17 +64,19 @@ Note: The simpson is caluclated based on acc values that are optionally substrac
 and give the true movement data. 
  
 METHOD SIGNATURE
+//TODO update
  Parameters:
  - LinkedList * signal: The signal containing samples to be analysed.
  - size_t step: The step size (default is 1) drives how accurate the results would be.
  - base: Optional postive base against which the integration is calculated. (default is 0).
  - int inputTargets: which component(s) of the samples for which the integration is to be calculated. 
  - vel_g * buf: buffer for result(s)
+   + result for each input target is put in the order as per the input targets (X -> Y -> Z -> RMQ -> M -> TIME -> ORDER)
  Return:
  - vel_g * : the buf array specified in the parameter;
  */
-vel_g * simpson(LinkedList * signal, size_t step, acc base, int inputTargets, vel_g * buf, char recoverSignal);
+vel_g * simpson(LinkedList * signal, size_t step, acc base, char recoverSignal, int unit, int inputTargets, int count, vel_g * buf);
 
-vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, int target, vel_g * buf, char recoverSignal);
+vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, char recoverSignal, int unit, int target, vel_g * buf);
 
 #endif //SIMULATED_CAWAX_MATHS_H

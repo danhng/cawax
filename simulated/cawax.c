@@ -1,6 +1,9 @@
 #include "cawax.h"
 #include <stdio.h>
 
+int CINDICES[] = { CINDEX_X, CINDEX_Y, CINDEX_Z, CINDEX_RMQ, CINDEX_MEAN, CINDEX_ORDER, CINDEX_TIME };
+int CINDICES_COUNT = sizeof(CINDICES) / sizeof(CINDICES[0]);
+
 char * cawaxTimeToString(const CAWAX_TIME_MSM numericTime, char * buf)
 {
 	 sprintf(buf, "%d:%d.%d", CAWAX_TIME_GET_MINUTE(numericTime), CAWAX_TIME_GET_SECOND(numericTime), CAWAX_TIME_GET_MILISECOND(numericTime));
@@ -11,7 +14,7 @@ long cawaxTimeDiff(CAWAX_TIME_MSM arg1, CAWAX_TIME_MSM arg2)
 {
 	char time1[10];
 	char time2[10];
-	printf("arg1 time: %s, arg2 time: %s\n", cawaxTimeToString(arg1, time1), cawaxTimeToString(arg2, time2));
+	//printf("arg1 time: %s, arg2 time: %s\n", cawaxTimeToString(arg1, time1), cawaxTimeToString(arg2, time2));
 	if (arg1 == arg2)
 		return 0;
 	int sign_factor = (arg1 < arg2) ? 1 : -1;

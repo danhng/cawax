@@ -10,6 +10,9 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 #include <assert.h>
 #include <stdlib.h>
 
+extern const int CINDICES[];
+extern const int CINDICES_COUNT;
+
 /*
 Calculate the trapezoidal area given sign identical sample values.
 Return a negative value on failure.
@@ -53,6 +56,11 @@ acc mean(acc * input, int count)
 	return sum / i;
 }
 
+/**
+Calculate the SD of a sub series from the signal.
+This would help figure out how acceleration values fluctuated over time thus
+potentially giving us a useful view on the properties of the movement.
+*/
 //TODO free
 acc standardDeviation(acc * input, size_t count)
 {
@@ -70,6 +78,9 @@ acc standardDeviation(acc * input, size_t count)
 }
 
 /*
+Calculate the area of the trapezoidal shape made up from 2 sample points and their corresponding projections
+
+PSEUDO: 
 If both are negative
 	sample1 = abs sample1;
 	sample2 = abs sample2;
@@ -90,8 +101,8 @@ acc trapezoid(acc sample1, acc sample2, CAWAX_TIME_MSM time1, CAWAX_TIME_MSM tim
 
 	// if both below the x axis
 	if (sample1 < 0 && sample2 < 0) {
-		sample1 = abs(sample1);
-		sample2 = abs(sample2);
+		sample1 = fabs(sample1);
+		sample2 = fabs(sample2);
 	}
 	// time sort
 	// since the numeric values can also be used to compare the times. We could use them directly.
@@ -109,9 +120,9 @@ acc trapezoid(acc sample1, acc sample2, CAWAX_TIME_MSM time1, CAWAX_TIME_MSM tim
 
 	// if the code reaches this point then we have sample1 -> sample2 (based on sample order and time)
 	assert((time1 < time2) && (order1 < order2));
-	/*printf("Swapping done.\n");
-	printf("sample 1: %.6f  /  %d  /%d\n", sample1, time1, order1 );
-	printf("sample 2: %.6f  /  %d  /%d\n", sample2, time2, order2 );*/
+	//printf("Swapping done.\n");
+	//printf("sample 1: %.6f  /  %d  /%d\n", sample1, time1, order1 );
+	//printf("sample 2: %.6f  /  %d  /%d\n", sample2, time2, order2 );
 	double delta = cawaxTimeDiff(time1, time2);
 	if (sample1 >= 0 && sample2 >= 0)
 		return trapezoidPolarIdentical(sample1, sample2, delta);
@@ -125,11 +136,11 @@ Supporting functions for calculating trapezoidal value
 acc trapezoidPolarIdentical(acc h1, acc h2, double delta)
 {
 	if (h1 * h2 < 0) {
-		printf("Calling trapezoidPolarIdentical error: h1 and h2's signs must be similar. %d and %d given.\n", h1, h2);
+		printf("Calling trapezoidPolarIdentical error: h1 and h2's signs must be similar. %.6f and %.6f given.\n", h1, h2);
 		return -1;
 	}
 	if (delta < 0) {
-		printf("Calling trapezoidPolarIdentical warning: delta should be positive. %d given.\n", delta);
+		printf("Calling trapezoidPolarIdentical warning: delta should be positive. %.3f given.\n", delta);
 		delta = fabs(delta);
 	}
 	return (delta * (fabs(h1) + fabs(h2)) / 2);
@@ -138,17 +149,39 @@ acc trapezoidPolarIdentical(acc h1, acc h2, double delta)
 acc trapezoidPolarOpposite(acc h1, acc h2, double delta)
 {
 	if (h1 * h2 > 0) {
-		fprintf(stderr, "Calling trapezoidPolarOpposite error: h1 and h2 must be sign opposite. %d and %d given.\n", h1, h2);
+		fprintf(stderr, "Calling trapezoidPolarOpposite error: h1 and h2 must be sign opposite. %.6f and %.6f given.\n", h1, h2);
 		return -1;
 	}
 	if (delta < 0) {
-		fprintf(stderr, "Calling trapezoidPolarOpposite warning: delta should be positive. %d given.\n", delta);
+		fprintf(stderr, "Calling trapezoidPolarOpposite warning: delta should be positive. %.3f given.\n", delta);
 		delta = fabs(delta);
 	}
 	return (h1*h1 + h2*h2) * delta / (2 * (fabs(h1) + fabs(h2)));
 }
 
 /*
+DESCRIPTION
+Calculate the simpson (vel_g) of a sub time series using Trapezium rules with optional step value (default is 1)
+controlling the accuracy level of the simpson
+- Integral accuracy <-><-> Computation time
+- See https://en.wikipedia.org/wiki/Trapezoidal_rule
+- Note: This method does not support negative base at the moment.
+- TODO: Wrapper methods needed.
+Note: The simpson is caluclated based on acc values that are optionally substracted by 1g in an attempt to mask out the effect of gravity
+and give the true movement data.
+
+METHOD SIGNATURE
+Parameters:
+- LinkedList * signal: The signal containing samples to be analysed.
+- size_t step: The step size (default is 1) drives how accurate the results would be.
+- base: Optional postive base against which the integration is calculated. (default is 0).
+- int inputTargets: which component(s) of the samples for which the integration is to be calculated.
+- vel_g * buf: buffer for result(s)
++ result for each input target is put in the order as per the input targets (X -> Y -> Z -> RMQ -> M -> TIME -> ORDER)
+Return:
+- vel_g * : the buf array specified in the parameter;
+
+PSEUDO CODE
 if base is negative 
 	return;
 //reprocess signal based on base
@@ -173,9 +206,8 @@ while (current signal <> tail)
 		next signal = current signal + step;
 return simpson;
 */
-vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, int target, vel_g * buf);
-
-vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, int target, vel_g * buf, char recoverSignal) {
+vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, char recoverSignal, int unit, int target, vel_g * buf) {
+	printf("Calling simpsonSingle on input %i\n", target);
 	if (base < 0) {
 		printf("Calling simpson requires non-negative base. %d given.\n", base);
 		return ERROR_POSITVE_OUTPUT;
@@ -197,7 +229,8 @@ vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, int target, ve
 		changed = 1;
 		while (current->next) {
 			acc * target_ptr = (acc *)getComponent(&(current->sample), target);
-			*target_ptr += base;
+			//TODO Wrapper function
+			*target_ptr -= base;
 			current = current->next;
 		}
 	}
@@ -206,39 +239,34 @@ vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, int target, ve
 	current = signal->head;
 	Node * next = jump(current, step);
 	Node * tail = jump(current, signal->count - 1);
-	printf("tail is: %p\n", tail);
-	//while (current signal <> tail)
-	//	tmp = current;
-	//while (next->time = current->time) // handle time duplicated samples
-	//	tmp = (current + next) / 2;
-	//next = next + step;
-	//calculate the trapezoid(tmp, next signal, base);
-	//add the trapezoid to the simpson;
-	//current signal = next signal;
-	//if (tail - current signal) < step
-	//	next signal = tail;
-	//else
-	//	next signal = current signal + step;
-	//return simpson;
+	Node * tmp;
+	//printf("tail is: %p\n", tail);
 
 	while (current != tail) {
 		// get the tmp node
-		Node * tmp = makeNode(current->sample);
+		tmp = makeNode(current->sample);
+		// next and prev for tmp are not needed.
 
 		//handling duplications (based on sample time)
 		// duplicate counter
 		int dups = 1;
 		// initially dupsSum is the first encountered node
-		acc dupsSum = *((acc *)getComponent(&(tmp->sample), target));
+		acc * dupsSum = (acc *)getComponent(&(tmp->sample), target);
 		while (next->sample.time == current->sample.time) {
 			// increase the dups counter
 			++dups;
-			dupsSum = *((acc *)getComponent(&(current->sample), target)) + *((acc *)getComponent(&(next->sample), target));
+			*dupsSum += *((acc *)getComponent(&(next->sample), target));
 			next = jump(next, step);
 		}
+		*dupsSum /= dups;
 		char timeBuf[10];
-		printf("Dups counter at time %s: %d\n", cawaxTimeToString(current->sample.time, timeBuf), dups);
+		printf("\nDups counter at time %-10s: %d, avg: %.6f\n", cawaxTimeToString(current->sample.time, timeBuf), dups, *dupsSum);
 		// DO CALCULATION STUFF HERE;
+		acc trapezoidal =  trapezoid(*dupsSum, *((acc *)getComponent(&(next->sample), target)), tmp->sample.time, next->sample.time, tmp->sample.order, next->sample.order);
+		char timeNextBuf[10];
+		printf("Got trapezoid %.6f on [%-10s : %-.6f] to [%-10s : %-.6f]\n", trapezoidal, timeBuf, *dupsSum, cawaxTimeToString(next->sample.time, timeNextBuf), *((acc *)getComponent(&(next->sample), target)));
+		simpson += trapezoidal;
+		printf("simpson till %10s: %.6f\n",timeNextBuf, simpson);
 		// next current and next pair
 		current = next;
 		// if next would be out of bound then assign tail to next, else assign the jumping result to next
@@ -247,14 +275,64 @@ vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, int target, ve
 			next = tail;
 		}
 	}
-		return NOT_IMPLEMENTED_PTR;
+
+	if (!tmp)
+		free(tmp);
+	
+	char time1[10];
+	char time2[10];
+	printf("Simpson (g/ms) calculated for interval %s to %s (%d ms) is: %.6f\nSimpson (m/s) is: %.6f\n", cawaxTimeToString(signal->head->sample.time, time1),
+		cawaxTimeToString(tail->sample.time, time2), cawaxTimeDiff(signal->head->sample.time, tail->sample.time), simpson, simpson * GRAVITY_ACC / 1000);
+
+	// recover (if needs be) all samples based on {base} parameter
+	if (changed && recoverSignal)
+	{
+		printf("Recovering signal from base %.6f ...\n", base);
+		while (current->next) {
+			acc * target_ptr = (acc *)getComponent(&(current->sample), target);
+			//TODO Wrapper function
+			*target_ptr += base;
+			current = current->next;
+		}
+	}
+
+	// convert to required unit
+	if (unit == UNIT_METER_PER_SEC)
+		simpson = simpson * GRAVITY_ACC / 1000;
+	else if (unit != UNIT_G_PER_MILI) {
+		printf("Error on calling simpsonSingle: Invalid unit: %s\n", unit);
+		simpson = 0;
+	}
+	*buf = simpson;
+
+	return buf;
 }
 
-vel_g * simpson(LinkedList * signal, size_t step, acc base, int inputTargets, vel_g * buf, char receoverSignal)
+/*
+Calculate simpson for multiple input targets
+*/
+vel_g * simpson(LinkedList * signal, size_t step, acc base, char recoverSignal, int unit, int inputTargets, int count, vel_g * buf)
 {
-	
-	return NOT_IMPLEMENTED_PTR;
-	
+	if (signal->count == 0 || !(signal->head)) {
+		printf("Calling simpson requires non-empty signal. however either count is 0: %d or head is null: %p\n", signal->count, signal->head);
+		return NULL;
+	}
+	if (!buf) {
+		printf("Error while calling simpson. Require non-null buffer. %p given.\n", buf);
+		return NULL;
+	}
+	// mask out trash
+	inputTargets &= 0x7f;
+	int i = 0;
+	int bufI = 0;
+	while (i < CINDICES_COUNT && bufI < count) {
+		printf("Current CINDEX is: %d \n", CINDICES[i]);
+		if (inputTargets & CINDICES[i]) {
+			simpsonSingle(signal, step, base, recoverSignal, unit, CINDICES[i], &buf[bufI]);
+			bufI++;
+		}
+		++i;
+	}
 }
 
 

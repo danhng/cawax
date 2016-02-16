@@ -25,6 +25,7 @@ int testTrapezoid(acc sample1, acc sample2, CAWAX_TIME_MSM time1, CAWAX_TIME_MSM
 int testGetComponent();
 int testJump();
 int testSimpsonSingle();
+int testSimpson();
 
 int main(void) {
 	//testMem();
@@ -33,24 +34,35 @@ int main(void) {
 	//testStandardDeviation();
 	//testTimeFormat();
 	//testCountLines("saw10.csv");
-	//testReadFile("saw10.csv");
+	//testReadFile("saw10.csv")
 	//testTimeDiff(1959312, 1981640);
 	//testTrapezoid(0.494282, -0.48618, 1959312, 1959312 + 500, 1, 2);
 	//testGetComponent();
 	//testJump();
 
+	//testSimpsonSingle();
 	testSimpsonSingle();
 	getchar();
+}
+
+int testSimpson() {
+	int linesRead = 0;
+	LinkedList * signal = readFile("saw10.csv", 10, &linesRead);
+	//toStringList(signal);
+	vel_g * buf = (vel_g *) malloc(sizeof(vel_g) * 2);
+	simpson(signal, 1, 0, 0, UNIT_METER_PER_SEC, CINDEX_X | CINDEX_Y, 2, buf);
+	/*printf("After being processed signal: \n");
+	toStringList(signal);*/
 }
 
 int testSimpsonSingle() {
 	int linesRead = 0;
 	LinkedList * signal = readFile("saw10.csv", 10, &linesRead);
 	//toStringList(signal);
-
-	simpsonSingle(signal, 1, 1, CINDEX_X, NULL, 0);
-	printf("After being processed signal: \n");
-	toStringList(signal);
+	vel_g * buf = malloc(sizeof(vel_g));
+	simpsonSingle(signal, 1, 0,  0, UNIT_METER_PER_SEC, CINDEX_Y, buf);
+	/*printf("After being processed signal: \n");
+	toStringList(signal);*/
 }
 
 int testJump() {
