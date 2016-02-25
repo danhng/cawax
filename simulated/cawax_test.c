@@ -26,6 +26,7 @@ int testGetComponent();
 int testJump();
 int testSimpsonSingle();
 int testSimpson();
+int testTimeInternal();
 
 int main(void) {
 	//testMem();
@@ -34,14 +35,15 @@ int main(void) {
 	//testStandardDeviation();
 	//testTimeFormat();
 	//testCountLines("saw10.csv");
-	//testReadFile("saw10.csv")
+	//testReadFile("saw10.csv");
 	//testTimeDiff(1959312, 1981640);
-	//testTrapezoid(0.494282, -0.48618, 1959312, 1959312 + 500, 1, 2);
+	//testTrapezoid(0.494282, -0.48618, INTERNAL_TIME_FROM_S(314,568726), INTERNAL_TIME_FROM_S(314, 668732), 1, 2);
 	//testGetComponent();
 	//testJump();
 
-	//testSimpsonSingle();
 	testSimpsonSingle();
+	//testSimpson();
+	//testTimeInternal();
 	getchar();
 }
 
@@ -50,7 +52,7 @@ int testSimpson() {
 	LinkedList * signal = readFile("saw10.csv", 10, &linesRead);
 	//toStringList(signal);
 	vel_g * buf = (vel_g *) malloc(sizeof(vel_g) * 2);
-	simpson(signal, 1, 0, 0, UNIT_METER_PER_SEC, CINDEX_X | CINDEX_Y, 2, buf);
+	simpson(signal, 1, 0, 0, UNIT_METER, UNIT_SECOND_TO_MICRO, CINDEX_X | CINDEX_Y, 2, buf);
 	/*printf("After being processed signal: \n");
 	toStringList(signal);*/
 }
@@ -60,7 +62,7 @@ int testSimpsonSingle() {
 	LinkedList * signal = readFile("saw10.csv", 10, &linesRead);
 	//toStringList(signal);
 	vel_g * buf = malloc(sizeof(vel_g));
-	simpsonSingle(signal, 1, 0,  0, UNIT_METER_PER_SEC, CINDEX_Y, buf);
+	simpsonSingle(signal, 1, 0,  0, UNIT_METER, UNIT_SECOND_TO_MICRO, CINDEX_Y, buf);
 	/*printf("After being processed signal: \n");
 	toStringList(signal);*/
 }
@@ -91,7 +93,7 @@ int testTrapezoid(acc sample1, acc sample2, CAWAX_TIME_MSM time1, CAWAX_TIME_MSM
 	printf("Sample 1: %.6f / %d / %d\n", sample1, time1, order1);
 	printf("Sample 2: %.6f / %d / %d\n", sample2, time2, order2);
 
-	printf("Trapezoid = %.6f\n", trapezoid(sample1, sample2, time1, time2, order1, order2));
+	printf("Trapezoid = %.6f\n", trapezoid(sample1, sample2, time1, time2, order1, order2, UNIT_MILLISEC_TO_MICRO));
 }
 
 int testTimeDiff(CAWAX_TIME_MSM arg1, CAWAX_TIME_MSM arg2) {
@@ -113,7 +115,19 @@ int testTimeFormat() {
 	printf("time 29:30.100 is: %d\n", time);
 	printf("min is: %d\n", CAWAX_TIME_GET_MINUTE(time));
 	printf("sec is: %d\n", CAWAX_TIME_GET_SECOND(time));
-	printf("msec is: %d\n", CAWAX_TIME_GET_MILISECOND(time));
+	printf("msec is: %d\n", CAWAX_TIME_GET_MILLISECOND(time));
+
+}
+
+int testTimeInternal() {
+	INTERNAL_TIME time = INTERNAL_TIME_FROM_S(316, 68726);
+	printf("time 316.068726 is: %d\n", time);
+	printf("second is: %d\n", INTERNAL_TIME_GET_SECOND(time));
+	printf("mili is: %d\n", INTERNAL_TIME_GET_MILLI(time));
+	printf("micro is: %d\n", INTERNAL_TIME_GET_MICRO(time));
+	INTERNAL_TIME time2 = INTERNAL_TIME_FROM_S(316, 168732);
+	printf("time 316.168732 is: %d\n", time2);
+	printf("diff is: %d\n", cawaxInternalTimeDiff(time, time2, UNIT_MILLISEC_TO_MICRO));
 }
 
 int testIntegral() {

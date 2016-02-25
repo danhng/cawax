@@ -102,8 +102,9 @@ LinkedList * readFile(const char * filename, int count, int * samplesRead)
 		if (readTokens(tokens, currentSample)) {
 			samplesCounter++;
 			for (int i = 0; i < SAMPLE_COMPONENTS_COUNT; i++) {
-				printf("token %d: %-10s // ", i, tokens[i]);
+				printf("token %d: %-15s // ", i, tokens[i]);
 			}
+			printf("\n");
 
 			/*DO THE DATA PARSING*/
 			// tl needed
@@ -112,25 +113,38 @@ LinkedList * readFile(const char * filename, int count, int * samplesRead)
 			/*=============================================================
 			parse the time
 			==============================================================*/
-			CAWAX_TIME_MSM mili = 0;
-			CAWAX_TIME_MSM sec = 0;
-			CAWAX_TIME_MSM minute = 0;
-			char * mili_s = (char *) malloc(4);
-			
-			sscanf(tokens[0], "%d:%d.%s", &minute, &sec, mili_s);
-			//printf("mili_s is: %s\n", mili_s);
-			mili = strtol(mili_s, &tl, 10) *  pow(10, 3 - strlen(mili_s));
-			free(mili_s);
-			printf("min: %d, sec: %d, %mili: %d\n", minute, sec, mili);
+			// old time received, does not work anymore
+			//CAWAX_TIME_MSM mili = 0;
+			//CAWAX_TIME_MSM sec = 0;
+			//CAWAX_TIME_MSM minute = 0;
+			//char * mili_s = (char *) malloc(4);
+			//
+			//sscanf(tokens[0], "%d:%d.%s", &minute, &sec, mili_s);
+			////printf("mili_s is: %s\n", mili_s);
+			//mili = strtol(mili_s, &tl, 10) *  pow(10, 3 - strlen(mili_s));
+			//free(mili_s);
+			//printf("min: %d, sec: %d, %mili: %d\n", minute, sec, mili);
 
-			CAWAX_TIME_MSM time = CAWAX_TIME_FROM_MSM(minute, sec, mili);
+			//CAWAX_TIME_MSM time = CAWAX_TIME_FROM_MSM(minute, sec, mili);
 			//printf("\n********** Time extracted is: %d, revalidate: min is: %d, sec is: %d, mili is: %d \n", time, 
-			//	CAWAX_TIME_GET_MINUTE(time), CAWAX_TIME_GET_SECOND(time), CAWAX_TIME_GET_MILISECOND(time));
+			//	CAWAX_TIME_GET_MINUTE(time), CAWAX_TIME_GET_SECOND(time), CAWAX_TIME_GET_MILLISECOND(time));
+
+			// correct new time (internal time of the imu)
+			INTERNAL_TIME second = 0;
+			INTERNAL_TIME micro = 0;
+			// needs to handle round micro values
+			char * micro_s = (char *) malloc(7);
+			sscanf(tokens[TIME_INTERNAL_BUF_INDEX], "%d.%s", &second, micro_s);
+			micro = strtol(micro_s, &tl, 10) *  pow(10, 6 - strlen(micro_s));
+			free(micro_s);
+			INTERNAL_TIME internalTime = INTERNAL_TIME_FROM_S(second, micro);
+			//printf("\n********** Time extracted is: %d, revalidate: sec is: %d, micro is: %d \n", internalTime, INTERNAL_TIME_GET_SECOND(internalTime), INTERNAL_TIME_GET_MICRO(internalTime));
+
 			/* =============================================================
 			parse the order
 			================================================================*/
 			sample_th order;
-			sscanf(tokens[1], "%d", &order);
+			sscanf(tokens[SAMPLE_INDEX_BUF_INDEX], "%d", &order);
 			//printf("sample order: %d\n", order);
 
 			/* =============================================================
@@ -139,12 +153,12 @@ LinkedList * readFile(const char * filename, int count, int * samplesRead)
 			acc x;
 			acc y;
 			acc z;
-			sscanf(tokens[2], "%lf", &x);
-			sscanf(tokens[3], "%lf", &y);
-			sscanf(tokens[4], "%lf", &z);
+			sscanf(tokens[X_BUF_INDEX], "%lf", &x);
+			sscanf(tokens[Y_BUF_IDNEX], "%lf", &y);
+			sscanf(tokens[Z_BUF_INDEX], "%lf", &z);
 			//printf("x: %.6f, y: %.6f, z: %.6f \n", x, y, z);
 			
-			Sample sample = { time, order, x, y, z };
+			Sample sample = { internalTime, order, x, y, z };
 			add(sample, list);
 		}
 		

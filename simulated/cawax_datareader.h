@@ -10,18 +10,28 @@ Operations used to read csv data files generated from waxrec.
 #pragma once
 
 #include "cawax_datastructs.h"
-#define SAMPLE_BYTES 151 // default is just 3 acc values of 8 bytes each
+#define SAMPLE_BYTES 181 // default is just 3 acc values of 8 bytes each (ascii)
 
 // default is WAX9 
 
-#define TIME_INDEX 1 
+#define TIME_RECEIVED_INDEX 1 
+
 #define SAMPLE_INDEX 2
+#define TIME_INTERNAL_INDEX 3
 #define X_INDEX 4
 #define Y_INDEX 5 
 #define Z_INDEX 6 
 
+#define SAMPLE_INDEX_BUF_INDEX 0
+#define TIME_INTERNAL_BUF_INDEX 1
+#define X_BUF_INDEX 2
+#define Y_BUF_IDNEX 3
+#define Z_BUF_INDEX 4
+
+
+
 //#ifdef __WAX9 
-//	#define TIME_INDEX 1
+//	#define TIME_RECEIVED_INDEX 1
 //	#define SAMPLE_INDEX 2
 //	#define X_INDEX 4
 //	#define Y_INDEX 5
@@ -30,7 +40,7 @@ Operations used to read csv data files generated from waxrec.
 //
 //#else
 //	#ifdef __AX3
-//		#define TIME_INDEX 0
+//		#define TIME_RECEIVED_INDEX 0
 //		#define X_INDEX 1
 //		#define Y_INDEX 2
 //		#define Z_INDEX 3
@@ -42,7 +52,7 @@ Operations used to read csv data files generated from waxrec.
 	#define SAMPLE_INDEX -1
 #endif			
 
-#define INDEX_A_TARGET_TOKEN(index)		(((index) == TIME_INDEX)  \
+#define INDEX_A_TARGET_TOKEN(index)		(((index) == TIME_INTERNAL_INDEX)  \
 									 ||  ((index) == SAMPLE_INDEX) \
 									 ||  ((index) == X_INDEX) \
 									 ||  ((index) == Y_INDEX) \

@@ -3,8 +3,8 @@
  * Newcastle University - School of Computing Science
  */
 
-#include <time.h>
 #include "omapi.h"
+#include "cawax.h"
 #include <stdio.h>
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -21,7 +21,7 @@ typedef enum {X, Y, Z} dimension;
  * Represent a sample obtained from the device
  */
 typedef struct sample {
-	OM_DATETIME time;
+	INTERNAL_TIME time; // internal time of the device
 	sample_th order; // order as in time domain
 	acc x;
     acc y;

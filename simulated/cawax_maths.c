@@ -91,11 +91,11 @@ If one is negative and one is positive
 	// see: https://github.com/danhng/cawax/support/trapezoid_diff_signs.JPG for simple proof
 	return (a*a + b*b) * (sample2->time - sample1->time) / ( 2 * (abs sample1->val + abs sample2->val)) 
 */
-acc trapezoid(acc sample1, acc sample2, CAWAX_TIME_MSM time1, CAWAX_TIME_MSM time2, sample_th order1, sample_th order2) {
+acc trapezoid(acc sample1, acc sample2, INTERNAL_TIME time1, INTERNAL_TIME time2, sample_th order1, sample_th order2, int unitToMicro) {
 	if (order1 == order2) {
-		char time1String[10];
-		char time2String[10];
-		printf("Error while working out trapezoid: duplicated orders of %d with time values: %s, %s\n", order1, cawaxTimeToString(time1, time1String), cawaxTimeToString(time2, time2String));
+		char time1String[INTERNAL_TIME_ASCII_BYTES];
+		char time2String[INTERNAL_TIME_ASCII_BYTES];
+		printf("Error while working out trapezoid: duplicated orders of %d with time values: %s, %s\n", order1, cawaxInternalTimeToString(time1, time1String), cawaxInternalTimeToString(time2, time2String));
 		return -1;
 	}
 
@@ -109,7 +109,7 @@ acc trapezoid(acc sample1, acc sample2, CAWAX_TIME_MSM time1, CAWAX_TIME_MSM tim
 	// since sample orders reflect chronological order too we could therefore use them.
 	if (order2 < order1) {
 		acc sample1_tmp = 0;
-		CAWAX_TIME_MSM sample1Time_tmp = 0;
+		INTERNAL_TIME sample1Time_tmp = 0;
 		sample1_tmp = sample1;
 		sample1Time_tmp = time1;
 		sample1 = sample2;
@@ -121,13 +121,14 @@ acc trapezoid(acc sample1, acc sample2, CAWAX_TIME_MSM time1, CAWAX_TIME_MSM tim
 	// if the code reaches this point then we have sample1 -> sample2 (based on sample order and time)
 	assert((time1 < time2) && (order1 < order2));
 	//printf("Swapping done.\n");
-	//printf("sample 1: %.6f  /  %d  /%d\n", sample1, time1, order1 );
-	//printf("sample 2: %.6f  /  %d  /%d\n", sample2, time2, order2 );
-	double delta = cawaxTimeDiff(time1, time2);
+	printf("sample 1: %.6f  /  %d  /%d\n", sample1, time1, order1 );
+	printf("sample 2: %.6f  /  %d  /%d\n", sample2, time2, order2 );
+	double delta = cawaxInternalTimeDiff(time1, time2, unitToMicro);
+	printf("delta in %d is: %.3f\n", unitToMicro, delta);	
 	if (sample1 >= 0 && sample2 >= 0)
 		return trapezoidPolarIdentical(sample1, sample2, delta);
 	else
-		return trapezoidPolarOpposite(sample1, sample2, cawaxTimeDiff(time1, time2));
+		return trapezoidPolarOpposite(sample1, sample2, delta);
 }
 
 /* ===================================================================================
@@ -206,7 +207,7 @@ while (current signal <> tail)
 		next signal = current signal + step;
 return simpson;
 */
-vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, char recoverSignal, int unit, int target, vel_g * buf) {
+vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, char recoverSignal, int gOrMeter, int unitToMicro, int target, vel_g * buf) {
 	printf("Calling simpsonSingle on input %i\n", target);
 	if (base < 0) {
 		printf("Calling simpson requires non-negative base. %d given.\n", base);
@@ -259,14 +260,17 @@ vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, char recoverSi
 			next = jump(next, step);
 		}
 		*dupsSum /= dups;
-		char timeBuf[10];
-		printf("\nDups counter at time %-10s: %d, avg: %.6f\n", cawaxTimeToString(current->sample.time, timeBuf), dups, *dupsSum);
+		char timeBuf[INTERNAL_TIME_ASCII_BYTES];
+		printf("\nDups counter at time %-15s: %d, avg: %.6f\n", cawaxInternalTimeToString(current->sample.time, timeBuf), dups, *dupsSum);
 		// DO CALCULATION STUFF HERE;
-		acc trapezoidal =  trapezoid(*dupsSum, *((acc *)getComponent(&(next->sample), target)), tmp->sample.time, next->sample.time, tmp->sample.order, next->sample.order);
-		char timeNextBuf[10];
-		printf("Got trapezoid %.6f on [%-10s : %-.6f] to [%-10s : %-.6f]\n", trapezoidal, timeBuf, *dupsSum, cawaxTimeToString(next->sample.time, timeNextBuf), *((acc *)getComponent(&(next->sample), target)));
+
+		// pass 1 instead of the unitToMicro could save us a lot of arithmetic operations on large diviso(mostly divisions) while calculatio trapezoids. 
+		//todo perform the final unit conversion at the end.
+		acc trapezoidal =  trapezoid(*dupsSum, *((acc *)getComponent(&(next->sample), target)), tmp->sample.time, next->sample.time, tmp->sample.order, next->sample.order, unitToMicro );
+		char timeNextBuf[INTERNAL_TIME_ASCII_BYTES];
+		printf("Got trapezoid %.6f on [%-15s : %-.6f] to [%-15s : %-.6f]\n", trapezoidal, timeBuf, *dupsSum, cawaxInternalTimeToString(next->sample.time, timeNextBuf), *((acc *)getComponent(&(next->sample), target)));
 		simpson += trapezoidal;
-		printf("simpson till %10s: %.6f\n",timeNextBuf, simpson);
+		printf("simpson till %15s: %.6f\n",timeNextBuf, simpson);
 		// next current and next pair
 		current = next;
 		// if next would be out of bound then assign tail to next, else assign the jumping result to next
@@ -279,10 +283,8 @@ vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, char recoverSi
 	if (!tmp)
 		free(tmp);
 	
-	char time1[10];
-	char time2[10];
-	printf("Simpson (g/ms) calculated for interval %s to %s (%d ms) is: %.6f\nSimpson (m/s) is: %.6f\n", cawaxTimeToString(signal->head->sample.time, time1),
-		cawaxTimeToString(tail->sample.time, time2), cawaxTimeDiff(signal->head->sample.time, tail->sample.time), simpson, simpson * GRAVITY_ACC / 1000);
+	char time1[INTERNAL_TIME_ASCII_BYTES];
+	char time2[INTERNAL_TIME_ASCII_BYTES];
 
 	// recover (if needs be) all samples based on {base} parameter
 	if (changed && recoverSignal)
@@ -297,21 +299,26 @@ vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, char recoverSi
 	}
 
 	// convert to required unit
-	if (unit == UNIT_METER_PER_SEC)
-		simpson = simpson * GRAVITY_ACC / 1000;
-	else if (unit != UNIT_G_PER_MILI) {
-		printf("Error on calling simpsonSingle: Invalid unit: %s\n", unit);
+	if (gOrMeter == UNIT_METER)
+		simpson = simpson * GRAVITY_ACC;
+	else if (gOrMeter != UNIT_G) {
+		printf("Error on calling simpsonSingle: Invalid unit: %s\n", gOrMeter);
 		simpson = 0;
 	}
-	*buf = simpson;
+	printf("Simpson Spartial(g/9 or m/1): %d, Time(to micro): %d  calculated for interval %s to %s (%.3f s) is: %.6f\n", 
+		gOrMeter, unitToMicro,
+		cawaxInternalTimeToString(signal->head->sample.time, time1),
+		cawaxInternalTimeToString(tail->sample.time, time2), cawaxInternalTimeDiff(signal->head->sample.time, tail->sample.time, UNIT_SECOND_TO_MICRO), 
+		simpson);
 
+	*buf = simpson;
 	return buf;
 }
 
 /*
 Calculate simpson for multiple input targets
 */
-vel_g * simpson(LinkedList * signal, size_t step, acc base, char recoverSignal, int unit, int inputTargets, int count, vel_g * buf)
+vel_g * simpson(LinkedList * signal, size_t step, acc base, char recoverSignal, int gOrMeter, int unitToMicro, int inputTargets, int count, vel_g * buf)
 {
 	if (signal->count == 0 || !(signal->head)) {
 		printf("Calling simpson requires non-empty signal. however either count is 0: %d or head is null: %p\n", signal->count, signal->head);
@@ -328,7 +335,7 @@ vel_g * simpson(LinkedList * signal, size_t step, acc base, char recoverSignal, 
 	while (i < CINDICES_COUNT && bufI < count) {
 		printf("Current CINDEX is: %d \n", CINDICES[i]);
 		if (inputTargets & CINDICES[i]) {
-			simpsonSingle(signal, step, base, recoverSignal, unit, CINDICES[i], &buf[bufI]);
+			simpsonSingle(signal, step, base, recoverSignal, gOrMeter, unitToMicro, CINDICES[i], &buf[bufI]);
 			bufI++;
 		}
 		++i;

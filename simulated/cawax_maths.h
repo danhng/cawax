@@ -9,6 +9,8 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 #define SIMULATED_CAWAX_MATHS_H
 
 #include "cawax.h"
+#include "cawax_datastructs.h"
+
 
 
 // https://en.wikipedia.org/wiki/Gravitational_acceleration
@@ -18,9 +20,9 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 
 // units of integration
 
-#define UNIT_G_PER_MILI 1
+#define UNIT_METER 1
 
-#define UNIT_METER_PER_SEC 2
+#define UNIT_G 10
 
 // velocity delta based upon g (not m/s^2 but gm/s^2)
 typedef long vel_g;
@@ -51,7 +53,7 @@ acc standardDeviation(acc * input, size_t  count);
 /*
 Calculate the area of the trapezoidal shape made up from 2 sample points and their corresponding projections
 */
-acc trapezoid(acc sample1, acc sample2, CAWAX_TIME_MSM time1, CAWAX_TIME_MSM time2, sample_th order1, sample_th order2);
+acc trapezoid(acc sample1, acc sample2, INTERNAL_TIME time1, INTERNAL_TIME time2, sample_th order1, sample_th order2, int unitToMicro);
 
 /*
 Calculate the simpson (vel_g) of a sub time series using Trapezium rules with optional step value (default is 1) 

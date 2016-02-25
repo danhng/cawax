@@ -234,8 +234,8 @@ LinkedList * emptyLinkedList(LinkedList * list)
 
 int toStringSample(Sample * sample)
 {
-	char * time = (char *)malloc(10);
-	printf("%-30s/%-5d/x: %2.3f, y: %2.3f, z: %2.3f\n", cawaxTimeToString(sample->time, time), sample->order, sample->x, sample->y, sample->z);
+	char * time = (char *)malloc(20);
+	printf("%-30s/%-5d/x: %2.3f, y: %2.3f, z: %2.3f\n", cawaxInternalTimeToString(sample->time, time), sample->order, sample->x, sample->y, sample->z);
 	free(time);
 	return 0;
 }
@@ -243,9 +243,9 @@ int toStringSample(Sample * sample)
 int toStringNode(Node * node)
 {
 	Sample sample = node->sample;
-	char * time = (char *)malloc(20);
+	char * time = (char *)malloc(15);
 	printf("--------------------------------------------------\n");
-	printf("Node %p / Prev: %p / Next: %p \nSample:  %-10s / %-5d / x: %2.3f, y: %2.3f, z: %2.3f\n", node, node->prev, node->next, cawaxTimeToString(sample.time, time), sample.order, sample.x, sample.y, sample.z);
+	printf("Node %p / Prev: %p / Next: %p \nSample:  %-15s / %-5d / x: %2.3f, y: %2.3f, z: %2.3f\n", node, node->prev, node->next, cawaxInternalTimeToString(sample.time, time), sample.order, sample.x, sample.y, sample.z);
 	printf("--------------------------------------------------\n");
 	free(time);
 	return 0;

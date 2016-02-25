@@ -1,13 +1,12 @@
 /*
 @author Danh Thanh Nguyen <d.t.nguyen@newcastle.ac.uk>
 
-Many code patterns in this project are thanks to the openmovement project of Newcastle University. 
+Many code patterns in this project are thanks to the openmovement project of Newcastle University.
 See: https://github.com/digitalinteraction/openmovement for more details.
 */
 #pragma once
 
 #include <math.h>
-#include "cawax_datastructs.h"
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -48,19 +47,37 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 // ... subject to be expanded.
 
 /*
-TIME def (22 bits) of a sample extracted from the output file including:
- - Minute
- - Second
- - Milisecond
+TIME def (the time the sample is received) (22 bits) of a sample extracted from the output file including:
+- Minute
+- Second
+- Milisecond
 */
 typedef long CAWAX_TIME_MSM;
-#define CAWAX_TIME_FROM_MSM(minute, second, milisec) \
+#define CAWAX_TIME_FROM_MSM(minute, second, millisec) \
 		(((CAWAX_TIME_MSM)(minute)   << 16)) \
 	   |(((CAWAX_TIME_MSM)(second)   << 10)) \
-	   |(((CAWAX_TIME_MSM)(milisec)       )) 
+	   |(((CAWAX_TIME_MSM)(millisec)       ))
 #define CAWAX_TIME_GET_MINUTE(time_msm)		((unsigned int) (((time_msm) >> 16) & 0x3f ))
 #define CAWAX_TIME_GET_SECOND(time_msm)		((unsigned int) (((time_msm) >> 10) & 0x3f ))
-#define CAWAX_TIME_GET_MILISECOND(time_msm)	((unsigned int) (((time_msm)	  ) & 0x3ff))
+#define CAWAX_TIME_GET_MILLISECOND(time_msm)	((unsigned int) (((time_msm)	  ) & 0x3ff))
+
+/*
+TIME def (the time of the internal clock at which the sample is recorded) extracted from the signal output file including
+- Second
+- Microsecond
+*/
+typedef unsigned long INTERNAL_TIME;
+#define INTERNAL_TIME_FROM_S(second, microsec) \
+		(((INTERNAL_TIME)(second) << 20)) \
+	|	(((INTERNAL_TIME)(microsec) ))
+#define INTERNAL_TIME_GET_SECOND(time_msm)		((unsigned long) (((time_msm) >> 20) & 0x1fffffffffff ))
+#define INTERNAL_TIME_GET_MICRO(time_msm)		((unsigned int)  (((time_msm)      ) & 0xfffff ))
+#define INTERNAL_TIME_GET_MILLI(time_msm)			((unsigned int)  (INTERNAL_TIME_GET_MICRO(time_msm) + 500) / 1000)
+
+#define INTERNAL_TIME_ASCII_BYTES 15
+
+#define UNIT_SECOND_TO_MICRO 1000000
+#define UNIT_MILLISEC_TO_MICRO 1000
 
 /*
 Return a string representation of the numeric time in format mm:ss:lll
@@ -69,13 +86,23 @@ char * cawaxTimeToString(const CAWAX_TIME_MSM numericTime, char * buf);
 
 /*
 Return the difference (in miliseconds) of time arg2 to arg1 (how can arg1 get to arg2)
- - If arg1 < arg2 then return a positive value
- - Else return a negative value
+- If arg1 < arg2 then return a positive value
+- Else return a negative value
 */
 long cawaxTimeDiff(CAWAX_TIME_MSM arg1, CAWAX_TIME_MSM arg2);
 
 /*
-Define how the IMU will be attached to the users. 
+Return a string representation of the numeric time in format ss:mmmmmm
+*/
+char * cawaxInternalTimeToString(const INTERNAL_TIME numericTime, char * buf);
+
+/*
+Return the difference (in unit of choice) of time arg2 to arg1 (how can arg1 get to arg2)
+*/
+double cawaxInternalTimeDiff(INTERNAL_TIME arg1, INTERNAL_TIME arg2, int unitToMicro);
+
+/*
+Define how the IMU will be attached to the users.
 This plays an important role in how sensor data will be interpreted and processed.
 See WAX9 Datasheet for more details.
 */
