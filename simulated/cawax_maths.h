@@ -24,8 +24,17 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 
 #define UNIT_G 10
 
-// velocity delta based upon g (not m/s^2 but gm/s^2)
-typedef long vel_g;
+#define BASE_0 0
+
+#define BASE_1 1
+
+#define DO_RECOVER 1
+
+#define NO_RECOVER 0
+
+#define STEP_SIZE(x) (x)
+
+
 
 /**
  * Calculate the root mean square of a sample based on sqrt(x^2+y^2+z^2)
@@ -77,8 +86,8 @@ METHOD SIGNATURE
  Return:
  - vel_g * : the buf array specified in the parameter;
  */
-vel_g * simpson(LinkedList * signal, size_t step, acc base, char recoverSignal, int unit, int inputTargets, int count, vel_g * buf);
+vel_g * simpson(LinkedList * signal, size_t step, acc base, char recoverSignal, int gOrMeter, int unitToMicro, int inputTargets, int count, vel_g * buf);
 
-vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, char recoverSignal, int unit, int target, vel_g * buf);
+vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, char recoverSignal, int gOrMeter, int unitToMicro, int target, vel_g * buf);
 
 #endif //SIMULATED_CAWAX_MATHS_H

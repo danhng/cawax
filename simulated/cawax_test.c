@@ -5,9 +5,8 @@ Many code patterns in this project are thanks to the openmovement project of New
 See: https://github.com/digitalinteraction/openmovement for more details.
 */
 
-#include "cawax_datastructs.h"
-#include "cawax_maths.h"
-#include "cawax_datareader.h"
+#include "cawax_include.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -27,6 +26,7 @@ int testJump();
 int testSimpsonSingle();
 int testSimpson();
 int testTimeInternal();
+int testToFeature();
 
 int main(void) {
 	//testMem();
@@ -41,18 +41,31 @@ int main(void) {
 	//testGetComponent();
 	//testJump();
 
-	testSimpsonSingle();
+	//testSimpsonSingle();
 	//testSimpson();
 	//testTimeInternal();
+
+	testToFeature();
 	getchar();
 }
+
+int testToFeature() {
+	int linesRead = 0;
+	LinkedList * signal = readFile("saw10.csv", 10, &linesRead);
+	//toStringList(signal);
+	Feature * f = (Feature *) malloc(sizeof(Feature));
+	toFeature(signal, f);
+	printFeature(f);
+
+}
+
 
 int testSimpson() {
 	int linesRead = 0;
 	LinkedList * signal = readFile("saw10.csv", 10, &linesRead);
 	//toStringList(signal);
 	vel_g * buf = (vel_g *) malloc(sizeof(vel_g) * 2);
-	simpson(signal, 1, 0, 0, UNIT_METER, UNIT_SECOND_TO_MICRO, CINDEX_X | CINDEX_Y, 2, buf);
+	simpson(signal, 1, 0, 0, UNIT_METER, UNIT_SECOND_TO_MICRO, CINDEX_X | CINDEX_RMQ, 2, buf);
 	/*printf("After being processed signal: \n");
 	toStringList(signal);*/
 }
@@ -62,7 +75,7 @@ int testSimpsonSingle() {
 	LinkedList * signal = readFile("saw10.csv", 10, &linesRead);
 	//toStringList(signal);
 	vel_g * buf = malloc(sizeof(vel_g));
-	simpsonSingle(signal, 1, 0,  0, UNIT_METER, UNIT_SECOND_TO_MICRO, CINDEX_Y, buf);
+	simpsonSingle(signal, 1, 0,  0, UNIT_METER, UNIT_SECOND_TO_MICRO, CINDEX_RMQ, buf);
 	/*printf("After being processed signal: \n");
 	toStringList(signal);*/
 }
@@ -81,11 +94,13 @@ int testJump() {
 
 
 int testGetComponent() {
-	Sample sample = { 0, 0, 0, 0, 0 };
-	printf("x address is: %p\nx address from getComponent is: %p\n", &sample.x, getComponent(&sample, CINDEX_X));
-	acc * x_ptr = (acc *)getComponent(&sample.x, CINDEX_X);
-	*x_ptr = 1;
-	printf("new x changed using getComponent is (should be 1): %.3f\n", *x_ptr);
+	Sample sample = { 0, 0, 1, 2, 3, 4 };
+	sample.x = 1;
+	printf("rmq address is: %p\nrmq address from getComponent is: %p\n", &sample.x, getComponent(&sample, CINDEX_RMQ));
+	acc * rmq_ptr = (acc *)getComponent(&sample, CINDEX_RMQ);
+	printf("x val is: %.3f\n", *rmq_ptr);
+	*rmq_ptr = 1;
+	printf("new rmq changed using getComponent is (should be 1): %.3f\n", *rmq_ptr);
 }
 
 int testTrapezoid(acc sample1, acc sample2, CAWAX_TIME_MSM time1, CAWAX_TIME_MSM time2, sample_th order1, sample_th order2) {

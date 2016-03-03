@@ -22,12 +22,16 @@ void * getComponent(Sample * sample, int componentIndex) {
 	if (componentIndex & CINDEX_Z) {
 		return &(sample->z);
 	}
+	if (componentIndex & CINDEX_RMQ) {
+		return &(sample->rmq);
+	}
 	if (componentIndex & CINDEX_ORDER) {
 		return &(sample->order);
 	}
 	if (componentIndex & CINDEX_TIME) {
 		return &(sample->time);
 	}
+	
 
 	fprintf(stderr, "Calling getComponent needs a valid componentIndex. %x given.\n", componentIndex);
 	return NULL;
@@ -173,7 +177,7 @@ LinkedList * addI(node_index index, Sample sample, LinkedList *list) {
 	return list;
 }
 
-acc * getSubSeries(dimension d, node_index start, node_index end, LinkedList * list)
+acc * getSubSeries(dataDimension d, node_index start, node_index end, LinkedList * list)
 {
 	if (end >= list->count) {
 		printf("warn: specfied end index %d out of bound %d in list %p. reset to tail.", end, list->count, list);
@@ -191,7 +195,7 @@ acc * getSubSeries(dimension d, node_index start, node_index end, LinkedList * l
 	Node * current = get(start, list);
 	
 	while (count < (size-1) && current) {
-		sub[count] = (d == Y ? current->sample.y : d == Z ? current->sample.z : current->sample.x);
+		sub[count] = (d == Y ? current->sample.y : d == Z ? current->sample.z : d == X ? current->sample.x : current->sample.rmq);
 		count++;
 		current = current->next;
 	}
@@ -235,7 +239,7 @@ LinkedList * emptyLinkedList(LinkedList * list)
 int toStringSample(Sample * sample)
 {
 	char * time = (char *)malloc(20);
-	printf("%-30s/%-5d/x: %2.3f, y: %2.3f, z: %2.3f\n", cawaxInternalTimeToString(sample->time, time), sample->order, sample->x, sample->y, sample->z);
+	printf("%-30s/%-5d/x: %2.3f, y: %2.3f, z: %2.3f, rmq: %2.3f\n", cawaxInternalTimeToString(sample->time, time), sample->order, sample->x, sample->y, sample->z, sample->rmq);
 	free(time);
 	return 0;
 }
@@ -245,7 +249,8 @@ int toStringNode(Node * node)
 	Sample sample = node->sample;
 	char * time = (char *)malloc(15);
 	printf("--------------------------------------------------\n");
-	printf("Node %p / Prev: %p / Next: %p \nSample:  %-15s / %-5d / x: %2.3f, y: %2.3f, z: %2.3f\n", node, node->prev, node->next, cawaxInternalTimeToString(sample.time, time), sample.order, sample.x, sample.y, sample.z);
+	printf("Node %p / Prev: %p / Next: %p \nSample:  %-15s / %-5d / x: %2.3f, y: %2.3f, z: %2.3f, rmq: %2.3f\n", 
+		node, node->prev, node->next, cawaxInternalTimeToString(sample.time, time), sample.order, sample.x, sample.y, sample.z, sample.rmq);
 	printf("--------------------------------------------------\n");
 	free(time);
 	return 0;

@@ -7,6 +7,7 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 
 #include "cawax_datareader.h"
 #include "cawax.h"
+#include "cawax_maths.h"
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
@@ -158,11 +159,12 @@ LinkedList * readFile(const char * filename, int count, int * samplesRead)
 			sscanf(tokens[Z_BUF_INDEX], "%lf", &z);
 			//printf("x: %.6f, y: %.6f, z: %.6f \n", x, y, z);
 			
-			Sample sample = { internalTime, order, x, y, z };
+			// todo add a param for optional computation
+			
+			Sample sample = { internalTime, order, x, y, z, 0 };
+			sample.rmq = rootMeanSquare(&sample);
 			add(sample, list);
 		}
-		
-
 		//printf("Samples read so far: %d\n", ++samplesCounter);
 	}
 	*samplesRead = samplesCounter;

@@ -333,13 +333,14 @@ vel_g * simpson(LinkedList * signal, size_t step, acc base, char recoverSignal, 
 	int i = 0;
 	int bufI = 0;
 	while (i < CINDICES_COUNT && bufI < count) {
-		printf("Current CINDEX is: %d \n", CINDICES[i]);
+		//printf("Current CINDEX is: %d \n", CINDICES[i]);
 		if (inputTargets & CINDICES[i]) {
 			simpsonSingle(signal, step, base, recoverSignal, gOrMeter, unitToMicro, CINDICES[i], &buf[bufI]);
 			bufI++;
 		}
 		++i;
 	}
+	printf("subsignal address after simpson is: %p\n", signal);
 }
 
 

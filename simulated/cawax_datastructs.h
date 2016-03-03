@@ -15,7 +15,10 @@ typedef double acc;
 typedef unsigned long sample_th;
 typedef unsigned long node_index;
 
-typedef enum {X, Y, Z} dimension;
+// velocity delta based upon g (not m/s^2 but gm/s^2)
+typedef long vel_g;
+
+typedef enum {X, Y, Z, RMQ} dataDimension;
 
 /**
  * Represent a sample obtained from the device
@@ -26,7 +29,9 @@ typedef struct sample {
 	acc x;
     acc y;
     acc z;
+	acc rmq;
 } Sample;
+
 
 /* 
 Get the address of the queried component
@@ -104,14 +109,21 @@ LinkedList *addI(node_index index, Sample sample, LinkedList *list);
  */
 LinkedList * removeI(LinkedList *list);
 
+/*
+Get a subList from the original list
+This is used for obtaining continous windows from the signal with 0.5second overlapping.
+
+*/
+LinkedList * subList(int start, int end, LinkedList * original, LinkedList * sub);
+
 /**
- * Get the time domain series for a specific dimension from {start} (inclusive) to (inclusive) {end}
+ * Get the time domain series for a specific dataDimension from {start} (inclusive) to (inclusive) {end}
  *  - If {start} = 0 then we start from the beginning
  *  - If {end} out of bound (>= list count) then {end} is tail (count - 1)
 Return a sub series array terminated by 100
  *
  */
-acc *getSubSeries(dimension d, node_index start, node_index end, LinkedList *list);
+acc *getSubSeries(dataDimension d, node_index start, node_index end, LinkedList *list);
 
 /*
 Free the linked list: free all memory blocks allocated for the list including:
