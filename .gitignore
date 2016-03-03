@@ -1,5 +1,9 @@
-.idea/*
-# Created by https://www.gitignore.io/api/visualstudio
+###CLion###
+## Ignore ide specific files
+simulated/.idea/
+simulated/CMakeLists.txt
+
+
 
 ### VisualStudio ###
 ## Ignore Visual Studio temporary files, build results, and
