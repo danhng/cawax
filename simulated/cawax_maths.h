@@ -86,8 +86,8 @@ METHOD SIGNATURE
  Return:
  - vel_g * : the buf array specified in the parameter;
  */
-vel_g * simpson(LinkedList * signal, size_t step, acc base, char recoverSignal, int gOrMeter, int unitToMicro, int inputTargets, int count, vel_g * buf);
+vel_g * simpson(LinkedList * signal, sample_th start, sample_th count, size_t step, acc base, char recoverSignal, int gOrMeter, int unitToMicro, int inputTargets, size_t buf_Count, vel_g * buf);
 
-vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, char recoverSignal, int gOrMeter, int unitToMicro, int target, vel_g * buf);
+vel_g * simpsonSingle(LinkedList * signal, sample_th start, sample_th count, size_t step, acc base, char recoverSignal, int gOrMeter, int unitToMicro, int inputTarget, vel_g * buf);
 
 #endif //SIMULATED_CAWAX_MATHS_H

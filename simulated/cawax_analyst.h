@@ -15,7 +15,13 @@ contains signal classifier, analyser based on features defined in cawax_maths.h 
 /*
 */
 typedef struct {
-	LinkedList * subSignal;
+	// const
+	Signal * samples;
+
+	// all the below vars get updated as the window slides along the signal
+	node_index windowStart;
+	node_index windowEnd;
+
 	// features
 	acc mean_x;
 	acc stdDev_X;
@@ -23,9 +29,15 @@ typedef struct {
 	acc integral_X;
 	acc integral_RMQ_XYZ;
 	//todo expand (make use of secondary-dataDimension data - Y, Z) 
-} Feature;
+} FeaturedWindow;
 
+#define WINDOW_SIZE_SECOND 1
 
+#define WINDOW_SIZE_OVERLAP_SECOND 0.5
+
+#define SAMPLES_TO_JUMP_NEXT_WINDOW (sample_th) ((WINDOW_SIZE_OVERLAP_SECOND) * (double)(SAMPLING_FREQUENCY_HZ))
+
+#define SAMPLES_TO_JUMP_WINDOW_END ((WINDOW_SIZE_SECOND) * (SAMPLING_FREQUENCY_HZ))
 
 /*
 bit 0-1:
@@ -56,12 +68,21 @@ bit 3-4-5: decision
 		*/
 typedef int posture;
 
-Feature * toFeature(LinkedList * subSignal, Feature * buf);
+FeaturedWindow *toFeaturedWindow(Signal *signal, node_index start, node_index end, FeaturedWindow *buf);
 
-Feature * printFeature(Feature * feature);
+FeaturedWindow *printFeaturedWindow(FeaturedWindow *featuredWindow);
 
 /*
 Analyse the subsignal windows.
 */
-posture analyse(Feature * feature);
+posture analyseFeaturedWindow(FeaturedWindow * feature);
 
+void processSignal(Signal * signal);
+/**
+ * Act based on the input posture
+ */
+void action(posture * p);
+
+void turnOffGyro();
+
+void turnOnGyro();

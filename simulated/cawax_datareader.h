@@ -28,6 +28,7 @@ Operations used to read csv data files generated from waxrec.
 #define Y_BUF_IDNEX 3
 #define Z_BUF_INDEX 4
 
+#define SAMPLING_FREQUENCY_HZ 10
 
 
 //#ifdef __WAX9 

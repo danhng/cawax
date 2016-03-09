@@ -13,7 +13,7 @@
 
 typedef double acc;
 typedef unsigned long sample_th;
-typedef unsigned long node_index;
+typedef long node_index;
 
 // velocity delta based upon g (not m/s^2 but gm/s^2)
 typedef long vel_g;
@@ -54,6 +54,12 @@ typedef struct linkedList {
 } LinkedList;
 // operations on linked list
 
+// Some typedefs for better understandability
+
+typedef LinkedList Window;
+
+typedef LinkedList Signal;
+
 /*
 Jump from one node to another node.
 
@@ -67,7 +73,7 @@ EXAMPLE:
  - A step of -1 will return the prev node or NULL if there's no prev node (head).
 
 */
-Node * jump(Node * depart, int step);
+Node * jump(const Node * depart, long step);
 
 /*
 Make a new Node for a sample.
@@ -111,10 +117,9 @@ LinkedList * removeI(LinkedList *list);
 
 /*
 Get a subList from the original list
-This is used for obtaining continous windows from the signal with 0.5second overlapping.
-
+This is used for obtaining continous windows from the signal with 0.5 second overlapping.
 */
-LinkedList * subList(int start, int end, LinkedList * original, LinkedList * sub);
+LinkedList * subList(sample_th start, sample_th end, LinkedList * original, LinkedList * sub);
 
 /**
  * Get the time domain series for a specific dataDimension from {start} (inclusive) to (inclusive) {end}

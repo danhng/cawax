@@ -7,6 +7,7 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 #pragma once
 
 #include <math.h>
+#include "cawax_utils.h"
 
 #define _CRT_SECURE_NO_WARNINGS
 

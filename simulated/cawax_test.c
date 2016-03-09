@@ -9,6 +9,7 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 int testDatastruct();
 int testMem();
@@ -26,7 +27,8 @@ int testJump();
 int testSimpsonSingle();
 int testSimpson();
 int testTimeInternal();
-int testToFeature();
+int test_toFeature();
+int test_processSignal();
 
 int main(void) {
 	//testMem();
@@ -45,17 +47,25 @@ int main(void) {
 	//testSimpson();
 	//testTimeInternal();
 
-	testToFeature();
+	//test_toFeature();
+	test_processSignal();
 	getchar();
 }
 
-int testToFeature() {
+int test_processSignal() {
+	int linesRead = 0;
+	LinkedList * signal = readFile("saw10.csv", 10, &linesRead);
+	processSignal(signal);
+	//freeLinkedList(signal);
+}
+
+int test_toFeature() {
 	int linesRead = 0;
 	LinkedList * signal = readFile("saw10.csv", 10, &linesRead);
 	//toStringList(signal);
-	Feature * f = (Feature *) malloc(sizeof(Feature));
-	toFeature(signal, f);
-	printFeature(f);
+	FeaturedWindow * f = (FeaturedWindow *) malloc(sizeof(FeaturedWindow));
+	toFeaturedWindow(signal, 0, 5, f);
+	printFeaturedWindow(f);
 
 }
 
@@ -65,7 +75,7 @@ int testSimpson() {
 	LinkedList * signal = readFile("saw10.csv", 10, &linesRead);
 	//toStringList(signal);
 	vel_g * buf = (vel_g *) malloc(sizeof(vel_g) * 2);
-	simpson(signal, 1, 0, 0, UNIT_METER, UNIT_SECOND_TO_MICRO, CINDEX_X | CINDEX_RMQ, 2, buf);
+	simpson(signal, 0, signal->count - 1,1, 0, 0, UNIT_METER, UNIT_SECOND_TO_MICRO, CINDEX_X | CINDEX_RMQ, 2, buf);
 	/*printf("After being processed signal: \n");
 	toStringList(signal);*/
 }
@@ -75,7 +85,7 @@ int testSimpsonSingle() {
 	LinkedList * signal = readFile("saw10.csv", 10, &linesRead);
 	//toStringList(signal);
 	vel_g * buf = malloc(sizeof(vel_g));
-	simpsonSingle(signal, 1, 0,  0, UNIT_METER, UNIT_SECOND_TO_MICRO, CINDEX_RMQ, buf);
+	simpsonSingle(signal, 0, signal->count - 1, 1, 0,  0, UNIT_METER, UNIT_SECOND_TO_MICRO, CINDEX_RMQ, buf);
 	/*printf("After being processed signal: \n");
 	toStringList(signal);*/
 }
@@ -105,14 +115,14 @@ int testGetComponent() {
 
 int testTrapezoid(acc sample1, acc sample2, CAWAX_TIME_MSM time1, CAWAX_TIME_MSM time2, sample_th order1, sample_th order2) {
 	printf("Testing trapezoid \n");
-	printf("Sample 1: %.6f / %d / %d\n", sample1, time1, order1);
-	printf("Sample 2: %.6f / %d / %d\n", sample2, time2, order2);
+	printf("Sample 1: %.6f / %li / %li\n", sample1, time1, order1);
+	printf("Sample 2: %.6f / %li / %li\n", sample2, time2, order2);
 
 	printf("Trapezoid = %.6f\n", trapezoid(sample1, sample2, time1, time2, order1, order2, UNIT_MILLISEC_TO_MICRO));
 }
 
 int testTimeDiff(CAWAX_TIME_MSM arg1, CAWAX_TIME_MSM arg2) {
-	printf("time1: %d\ntime2: %d\ndiff in mili: %d\n", arg1, arg2, cawaxTimeDiff(arg1, arg2));
+	printf("time1: %li\ntime2: %li\ndiff in mili: %li\n", arg1, arg2, cawaxTimeDiff(arg1, arg2));
 }
 
 int testReadFile(const char * filename) {
@@ -127,7 +137,7 @@ int testCountLines(const char * filename) {
 
 int testTimeFormat() {
 	CAWAX_TIME_MSM time = CAWAX_TIME_FROM_MSM(29, 30, 100);
-	printf("time 29:30.100 is: %d\n", time);
+	printf("time 29:30.100 is: %li\n", time);
 	printf("min is: %d\n", CAWAX_TIME_GET_MINUTE(time));
 	printf("sec is: %d\n", CAWAX_TIME_GET_SECOND(time));
 	printf("msec is: %d\n", CAWAX_TIME_GET_MILLISECOND(time));
@@ -136,13 +146,13 @@ int testTimeFormat() {
 
 int testTimeInternal() {
 	INTERNAL_TIME time = INTERNAL_TIME_FROM_S(316, 68726);
-	printf("time 316.068726 is: %d\n", time);
-	printf("second is: %d\n", INTERNAL_TIME_GET_SECOND(time));
+	printf("time 316.068726 is: %li\n", time);
+	printf("second is: %li\n", INTERNAL_TIME_GET_SECOND(time));
 	printf("mili is: %d\n", INTERNAL_TIME_GET_MILLI(time));
 	printf("micro is: %d\n", INTERNAL_TIME_GET_MICRO(time));
 	INTERNAL_TIME time2 = INTERNAL_TIME_FROM_S(316, 168732);
-	printf("time 316.168732 is: %d\n", time2);
-	printf("diff is: %d\n", cawaxInternalTimeDiff(time, time2, UNIT_MILLISEC_TO_MICRO));
+	printf("time 316.168732 is: %li\n", time2);
+	printf("diff is: %.3f\n", cawaxInternalTimeDiff(time, time2, UNIT_MILLISEC_TO_MICRO));
 }
 
 int testIntegral() {
@@ -170,7 +180,7 @@ int testIntegral() {
 	};
 		//printf("Integral of input: %p: %.3f", input, simpson(input, 1, ))
 		
-	return;
+	return 0;
 }
 
 int testStandardDeviation() {

@@ -37,13 +37,13 @@ void * getComponent(Sample * sample, int componentIndex) {
 	return NULL;
 }
 
-Node * jump(const Node * depart, int step) {
+Node * jump(const Node * depart, long step) {
 	if (!depart) {
 		fprintf(stderr, "Calling jump requires a non-null Node ptr, %p given. \n", depart);
 		return ERROR_PTR_OUTPUT;
 	}
 	char forw = step >= 0;
-	step = abs(step);
+	step = step * (step >= 0 ? 1 : -1);
 	int count = 0;
 	Node * current = depart;
 	while (count++ < step && current) {
@@ -52,6 +52,9 @@ Node * jump(const Node * depart, int step) {
 	// count now should be 1 greater than step
 	if (count < step) {
 		printf("Calling jump on %p step %d: Cannot reach the destination. Stopped at step %d.\n", depart, step, count);
+	}
+	if (!current) {
+		printf("Calling jump on %p step %d: Jump step too large. Return null.\n", depart, step);
 	}
 	//printf("count is: %d\n", count);
 	return current;
@@ -177,6 +180,13 @@ LinkedList * addI(node_index index, Sample sample, LinkedList *list) {
 	return list;
 }
 
+/*
+ * Pseudo
+ *
+ */
+LinkedList * subList(sample_th start, sample_th end, LinkedList * original, LinkedList * sub) {
+
+}
 acc * getSubSeries(dataDimension d, node_index start, node_index end, LinkedList * list)
 {
 	if (end >= list->count) {
@@ -199,7 +209,19 @@ acc * getSubSeries(dataDimension d, node_index start, node_index end, LinkedList
 		count++;
 		current = current->next;
 	}
-	sub[count] = TERMINATION_VALUE; // 0x1111 g should be unreachable 
+	//printf(DEBUG_HEADER_INFO"Last value of subseries on dimension %d is: %.3f\n", d, sub[count-1]);
+	sub[count] = TERMINATION_VALUE; // 0x1111 g should be unreachable
+
+	//debug
+	long i = 0;
+	acc c = sub[i];
+	printf(DEBUG_HEADER_INFO"subSeries on dimension %d:", d);
+	while (c != TERMINATION_VALUE) {
+		printf("%.6f , ",c);
+		c = sub[++i];
+	}
+	printf("\n");
+
 	return sub;
 }
 
@@ -218,7 +240,7 @@ LinkedList * emptyLinkedList(LinkedList * list)
 		return list;
 	
 	if (!(list->head)) {
-		printf("Warn: emptying list %p with NULL head.", list);
+		printf(DEBUG_HEADER_WARN"emptying list %p with NULL head.", list);
 		return list;
 	}
 
@@ -258,7 +280,7 @@ int toStringNode(Node * node)
 
 int toStringList(LinkedList* list) {
 	printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-	printf("LinkedList at %p: %d nodes, head %p\n", list, list->count, list->head);
+	printf("LinkedList at %p: %li nodes, head %p\n", list, list->count, list->head);
 	if (list->count == 0) {
 		printf("Empty\n");
 	}

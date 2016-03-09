@@ -184,6 +184,8 @@
 
 
 /* Plain C for undecorated function names in DLL */
+#include <stddef.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
