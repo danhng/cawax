@@ -1,11 +1,8 @@
 //
 // @author Danh Thanh Nguyen <d.t.nguyen@newcastle.ac.uk>
 //
-
-#include "cawax_datastructs.h"
 #include "cawax.h"
-#include <stdio.h>
-#include <stdlib.h>
+
 
 void * getComponent(Sample * sample, int componentIndex) {
 	if (!sample) {

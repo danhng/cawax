@@ -5,10 +5,7 @@ Many code patterns in this project are thanks to the openmovement project of New
 See: https://github.com/digitalinteraction/openmovement for more details.
 */
 
-#include "cawax_maths.h"
-#include <math.h>
-#include <assert.h>
-#include <stdlib.h>
+#include "cawax.h"
 
 extern const int CINDICES[];
 extern const int CINDICES_COUNT;

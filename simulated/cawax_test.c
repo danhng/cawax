@@ -5,10 +5,7 @@ Many code patterns in this project are thanks to the openmovement project of New
 See: https://github.com/digitalinteraction/openmovement for more details.
 */
 
-#include "cawax_include.h"
-
-#include <stdlib.h>
-#include <stdio.h>
+#include "cawax.h"
 
 int testDatastruct();
 int testMem();

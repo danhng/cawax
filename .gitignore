@@ -3,7 +3,14 @@
 simulated/.idea/
 simulated/CMakeLists.txt
 
-
+#ignore all temp files e.g. swp, ~
+**/*.swp
+**/*~
+**/builderror
+**/makelog
+**/obj
+simulated/*.o
+simulated/cawax
 
 ### VisualStudio ###
 ## Ignore Visual Studio temporary files, build results, and

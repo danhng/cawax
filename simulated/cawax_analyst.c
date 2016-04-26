@@ -1,6 +1,4 @@
-#include "cawax_analyst.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include "cawax.h"
 
 /*
 @author Danh Thanh Nguyen <d.t.nguyen@newcastle.ac.uk>

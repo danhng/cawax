@@ -5,12 +5,7 @@ Many code patterns in this project are thanks to the openmovement project of New
 See: https://github.com/digitalinteraction/openmovement for more details.
 */
 
-#include "cawax_datareader.h"
 #include "cawax.h"
-#include "cawax_maths.h"
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
 
 /*
 Read the required tokens from a sample string.
