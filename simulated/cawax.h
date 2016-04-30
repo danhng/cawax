@@ -16,6 +16,7 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 	#pragma message ("Linux system detected. Some libraries will be added.")
 	#include <stdint.h>
 #endif
+#include "cawax_utils.h"
 
 #define _CRT_SECURE_NO_WARNINGS
 

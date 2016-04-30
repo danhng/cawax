@@ -23,7 +23,7 @@ int countLines(const char * filename)
 		char errorMessage[100];
 		strcat(strcpy(errorMessage, "	Error while opening file "), filename);
 		perror(errorMessage);
-		printf("	Returning -1 for countLines on file %s.\n", filename);
+		printf(DEBUG_HEADER_INFO"Returning -1 for countLines on file %s.\n", filename);
 		return -1;
 	}
 	size_t count = 0;
@@ -42,21 +42,21 @@ int countLines(const char * filename)
 		char errorMessage[100];
 		strcat(strcpy(errorMessage, "	Error while reading file "), filename);
 		perror(errorMessage);
-		printf("	Returning -1 for countLines on file %s.\n", filename);
+		printf(DEBUG_HEADER_INFO"Returning -1 for countLines on file %s.\n", filename);
 		return -1;
 	}
 	fclose(fp);
-	printf("Finished calling countLines on %s. Result: %d\n", filename, count);
+	printf(DEBUG_HEADER_INFO"Finished calling countLines on %s. Result: %d\n", filename, count);
 	return count;
 }
 
 LinkedList * readFile(const char * filename, int count, int * samplesRead)
 {
-	printf("Calling readFile on file %s, count %d\n", filename, count);
+	printf(DEBUG_HEADER_INFO"Calling readFile on file %s, count %d\n", filename, count);
 	//int lines = countLines(filename);
 
 	if (INVALID_NEGATIVE_PARAM(count)) {
-		printf("	Err: Negative count parameter: %d.", count);
+		printf(DEBUG_HEADER_INFO"Err: Negative count parameter: %d.", count);
 		return NULL;
 	}
 
@@ -67,7 +67,7 @@ LinkedList * readFile(const char * filename, int count, int * samplesRead)
 		char errorMessage[100];
 		strcat(strcpy(errorMessage, "	Error while opening file "), filename);
 		perror(errorMessage);
-		printf("	Returning NULL for readFile %s count %d", filename, count);
+		printf(DEBUG_HEADER_INFO"Returning NULL for readFile %s count %d", filename, count);
 		return NULL;
 	}
 
@@ -97,6 +97,7 @@ LinkedList * readFile(const char * filename, int count, int * samplesRead)
 		//printf("	Next sample read is: %s\n", currentSample);
 		if (readTokens(tokens, currentSample)) {
 			samplesCounter++;
+			printf(DEBUG_HEADER_INFO);
 			for (int i = 0; i < SAMPLE_COMPONENTS_COUNT; i++) {
 				printf("token %d: %-15s // ", i, tokens[i]);
 			}
@@ -163,7 +164,7 @@ LinkedList * readFile(const char * filename, int count, int * samplesRead)
 		//printf("Samples read so far: %d\n", ++samplesCounter);
 	}
 	*samplesRead = samplesCounter;
-	printf("Calling readFile on file %s finished. %d samples read.\n", filename, samplesCounter);
+	printf(DEBUG_HEADER_INFO"Calling readFile on file %s finished. %d samples read.\n", filename, samplesCounter);
 	//free char** tokens and elements
 	free(currentSample);
 	for (int i = 0; i < SAMPLE_COMPONENTS_COUNT; i++) {
