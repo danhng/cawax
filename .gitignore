@@ -11,6 +11,11 @@ simulated/CMakeLists.txt
 **/obj
 simulated/*.o
 simulated/cawax
+.codelite/
+simulated.mk
+simulated.project
+simulated.txt
+simulated.workspace
 
 ### VisualStudio ###
 ## Ignore Visual Studio temporary files, build results, and

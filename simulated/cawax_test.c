@@ -82,7 +82,7 @@ int testSimpsonSingle() {
 	LinkedList * signal = readFile("saw10.csv", 10, &linesRead);
 	//toStringList(signal);
 	vel_g * buf = malloc(sizeof(vel_g));
-	simpsonSingle(signal, 0, signal->count - 1, 1, 0,  0, UNIT_METER, UNIT_SECOND_TO_MICRO, CINDEX_RMQ, buf);
+	simpsonSingle(signal, 0, signal->count - 1, 1, BASE_0,  DO_RECOVER, UNIT_METER, UNIT_SECOND_TO_MICRO, CINDEX_RMQ, buf);
 	/*printf("After being processed signal: \n");
 	toStringList(signal);*/
 }

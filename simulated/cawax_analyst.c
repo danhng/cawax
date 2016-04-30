@@ -8,8 +8,7 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 cawax_analyst.c
 */
 
-FeaturedWindow *toFeaturedWindow(Signal *signal, node_index start, node_index end, FeaturedWindow *buf)
-{
+FeaturedWindow *toFeaturedWindow(Signal *signal, node_index start, node_index end, FeaturedWindow *buf) {
 
 	buf->samples = signal;
 	buf->windowStart = start;

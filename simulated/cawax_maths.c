@@ -318,7 +318,7 @@ vel_g * simpsonSingle(LinkedList * signal, sample_th start, sample_th count, siz
 /*
 Calculate simpson for multiple input targets
 */
-vel_g * simpson(LinkedList * signal, sample_th start, sample_th count, size_t step, acc base, char recoverSignal, int gOrMeter, int unitToMicro, int inputTargets, size_t  bufCount, vel_g * buf)
+vel_g * simpson(LinkedList * signal, sample_th start, sample_th count, size_t step, acc base, char recoverSignal, int gOrMeter, int unitToMicro, int inputTargets, size_t bufCount, vel_g * buf)
 {
 	if (signal->count == 0 || !(signal->head)) {
 		printf(DEBUG_HEADER_INFO"Calling simpson requires non-empty signal. however either count is 0: %d or head is null: %p\n", signal->count, signal->head);

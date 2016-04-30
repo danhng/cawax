@@ -182,6 +182,8 @@ typedef struct linkedList {
 } LinkedList;
 // operations on linked list
 
+typedef LinkedList Signal;
+
 /*
 Jump from one node to another node.
 
@@ -195,7 +197,7 @@ EXAMPLE:
  - A step of -1 will return the prev node or NULL if there's no prev node (head).
 
 */
-Node * jump(const Node * depart, int step);
+Node * jump(const Node * depart, long step);
 
 /*
 Make a new Node for a sample.
@@ -242,7 +244,7 @@ Get a subList from the original list
 This is used for obtaining continous windows from the signal with 0.5second overlapping.
 
 */
-LinkedList * subList(int start, int end, LinkedList * original, LinkedList * sub);
+LinkedList * subList(sample_th start, sample_th end, LinkedList * original, LinkedList * sub);
 
 /**
  * Get the time domain series for a specific dataDimension from {start} (inclusive) to (inclusive) {end}
@@ -435,9 +437,9 @@ METHOD SIGNATURE
  Return:
  - vel_g * : the buf array specified in the parameter;
  */
-vel_g * simpson(LinkedList * signal, size_t step, acc base, char recoverSignal, int gOrMeter, int unitToMicro, int inputTargets, int count, vel_g * buf);
+vel_g * simpson(LinkedList * signal, sample_th start, sample_th count, size_t step, acc base, char recoverSignal, int gOrMeter, int unitToMicro, int inputTargets, size_t bufCount, vel_g * buf);
 
-vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, char recoverSignal, int gOrMeter, int unitToMicro, int target, vel_g * buf);
+vel_g * simpsonSingle(LinkedList * signal, sample_th start, sample_th count, size_t step, acc base, char recoverSignal, int gOrMeter, int unitToMicro, int inputTarget, vel_g * buf);
 
 #endif //SIMULATED_CAWAX_MATHS_H
 
@@ -448,8 +450,13 @@ vel_g * simpsonSingle(LinkedList * signal, size_t step, acc base, char recoverSi
 /**************************************************CAWAX ANALYSIS *******************************************/
 /*
 */
+#define SAMPLES_TO_JUMP_WINDOW_END 10
+#define SAMPLES_TO_JUMP_NEXT_WINDOW (SAMPLES_TO_JUMP_WINDOW_END / 2)
+
 typedef struct {
-	LinkedList * subSignal;
+	LinkedList * samples;
+	node_index windowStart;
+	node_index windowEnd;	
 	// features
 	acc mean_x;
 	acc stdDev_X;
@@ -457,7 +464,7 @@ typedef struct {
 	acc integral_X;
 	acc integral_RMQ_XYZ;
 	//todo expand (make use of secondary-dataDimension data - Y, Z) 
-} Feature;
+} FeaturedWindow;
 
 
 
@@ -490,14 +497,14 @@ bit 3-4-5: decision
 		*/
 typedef int posture;
 
-Feature * toFeature(LinkedList * subSignal, Feature * buf);
+FeaturedWindow *toFeaturedWindow(Signal *signal, node_index start, node_index end, FeaturedWindow *buf);
 
-Feature * printFeature(Feature * feature);
+FeaturedWindow * printFeaturedWindow(FeaturedWindow * feature);
 
 /*
 Analyse the subsignal windows.
 */
-posture analyse(Feature * feature);
+posture analyse(FeaturedWindow * feature);
 
 
 /** End Section Analysis **/
