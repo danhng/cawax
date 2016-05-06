@@ -27,10 +27,10 @@
     <ClCompile Include="cawax_datareader.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cawax.c">
+    <ClCompile Include="cawax_analyst.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cawax_analyst.c">
+    <ClCompile Include="cawax_time.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

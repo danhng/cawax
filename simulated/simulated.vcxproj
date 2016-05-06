@@ -142,12 +142,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="cawax.c" />
     <ClCompile Include="cawax_analyst.c" />
     <ClCompile Include="cawax_datastructs.c" />
     <ClCompile Include="cawax_maths.c" />
     <ClCompile Include="cawax_test.c" />
     <ClCompile Include="cawax_datareader.c" />
+    <ClCompile Include="cawax_time.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cawax.h" />

@@ -51,6 +51,7 @@ int main(void) {
 	printf("%li\n", action_end_sample(ORDER_WALK));
 	printf("%li\n", action_start_sample(ORDER_LIE));
 	printf("%li\n", action_end_sample(ORDER_LIE));
+	getchar();
 
 }
 
