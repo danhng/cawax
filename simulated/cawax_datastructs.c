@@ -58,6 +58,10 @@ Node * jump(const Node * depart, long step) {
 }
 
 
+ Node * tail(LinkedList * list) {
+	 return jump(list->head, list->count - 1);
+ }
+
 LinkedList * makeList() {
 	LinkedList * list;
 	int s = sizeof(Node *) + sizeof(long) ;

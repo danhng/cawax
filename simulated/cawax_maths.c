@@ -39,7 +39,7 @@ acc meanSample(Sample * sample)
 }
 
 //TODO free
-acc mean(acc * input, int count)
+acc mean(acc * input, node_index count)
 {
 	//printf("Calling mean at input: %p, count: %d\n", input, count);
 	long i = 0;
@@ -141,7 +141,9 @@ acc trapezoidPolarIdentical(acc h1, acc h2, double delta)
 		printf(DEBUG_HEADER_INFO"Calling trapezoidPolarIdentical warning: delta should be positive. %.3f given.\n", delta);
 		delta = fabs(delta);
 	}
-	return (delta * (fabs(h1) + fabs(h2)) / 2);
+	acc r = (delta * (fabs(h1) + fabs(h2)) / 2);
+	//printf("trap%.6f\n", r);
+	return r;
 }
 
 acc trapezoidPolarOpposite(acc h1, acc h2, double delta)
@@ -154,7 +156,9 @@ acc trapezoidPolarOpposite(acc h1, acc h2, double delta)
 		fprintf(stderr, DEBUG_HEADER_INFO"Calling trapezoidPolarOpposite warning: delta should be positive. %.3f given.\n", delta);
 		delta = fabs(delta);
 	}
-	return (h1*h1 + h2*h2) * delta / (2 * (fabs(h1) + fabs(h2)));
+	acc r = (h1*h1 + h2*h2) * delta / (2 * (fabs(h1) + fabs(h2)));
+	//printf("trap%.6f\n", r);
+	return r;
 }
 
 /*
@@ -305,13 +309,13 @@ vel_g * simpsonSingle(LinkedList * signal, sample_th start, sample_th count, siz
 		//printf(DEBUG_HEADER_INFO"Error on calling simpsonSingle: Invalid unit: %d\n", gOrMeter);
 		simpson = 0;
 	}
-	//printf(DEBUG_HEADER_INFO"Simpson Spartial(g/9 or m/1): %d, Time(to micro): %d  calculated for interval %s to %s (%.3f s) is: %.6f\n",
-//		   gOrMeter, unitToMicro,
-//		   cawaxInternalTimeToString(signal->head->sample.time, time1),
-//		   cawaxInternalTimeToString(endNode->sample.time, time2), cawaxInternalTimeDiff(signal->head->sample.time, endNode->sample.time, UNIT_SECOND_TO_MICRO),
-//		   simpson);
+	printf(DEBUG_HEADER_INFO"Simpson Spartial(g/9 or m/1): %d, Time(to micro): %d  calculated for interval %s to %s (%.3f s) is: %.6f\n",
+		   gOrMeter, unitToMicro,
+		   cawaxInternalTimeToString(signal->head->sample.time, time1),
+		   cawaxInternalTimeToString(endNode->sample.time, time2), cawaxInternalTimeDiff(signal->head->sample.time, endNode->sample.time, UNIT_SECOND_TO_MICRO),
+		   simpson);
 
-	*buf = simpson;
+	*buf = (vel_g) simpson;
 	return buf;
 }
 

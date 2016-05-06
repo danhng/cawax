@@ -7,7 +7,6 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 
 #include "cawax.h"
 
-
 int testDatastruct();
 int testMem();
 int testRootMeanSquare();
@@ -46,14 +45,24 @@ int main(void) {
 
 	//test_toFeature();
 	test_processSignal();
-	getchar();
+	printf("%li\n", action_start_sample(ORDER_STAND));
+	printf("%li\n", action_end_sample(ORDER_STAND));
+	printf("%li\n", action_start_sample(ORDER_WALK));
+	printf("%li\n", action_end_sample(ORDER_WALK));
+	printf("%li\n", action_start_sample(ORDER_LIE));
+	printf("%li\n", action_end_sample(ORDER_LIE));
+
 }
 
 int test_processSignal() {
 	int linesRead = 0;
-	LinkedList * signal = readFile("saw10.csv", 10, &linesRead);
-	processSignal(signal);
+	LinkedList * signal = readFile("Michael_Williamson_Train.csv", 10, &linesRead);
+	exportToC4_5Data(TrainDataStemFile, processSignal(signal), FALSE, FALSE);
+
+	LinkedList * testData = readFile("Michael_Williamson_Test.csv", 10, &linesRead);
+	exportToC4_5Data("cawax_test.data", processSignal(testData), TRUE, TRUE);
 	//freeLinkedList(signal);
+	return 0;
 }
 
 int test_toFeature() {
@@ -138,7 +147,6 @@ int testTimeFormat() {
 	printf("min is: %d\n", CAWAX_TIME_GET_MINUTE(time));
 	printf("sec is: %d\n", CAWAX_TIME_GET_SECOND(time));
 	printf("msec is: %d\n", CAWAX_TIME_GET_MILLISECOND(time));
-
 }
 
 int testTimeInternal() {
@@ -188,7 +196,6 @@ int testStandardDeviation() {
 int testMean() {
 	acc vals[] = {1, 2, 3, 4, TERMINATION_VALUE};
 	printf("Mean: %.3f", mean(vals, -1));
-
 }
 
 int testRootMeanSquare() {

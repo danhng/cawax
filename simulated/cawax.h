@@ -12,6 +12,14 @@ See: https://github.com/digitalinteraction/openmovement for more details.
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "cawax_debug.h"
+
+typedef int BOOLEAN;
+
+#define TRUE 1
+
+#define FALSE 0
+
 #ifdef __linux__
 	#pragma message ("Linux system detected. Some libraries will be added.")
 	#include <stdint.h>
@@ -144,7 +152,7 @@ typedef unsigned long sample_th;
 typedef unsigned long node_index;
 
 // velocity delta based upon g (not m/s^2 but gm/s^2)
-typedef long vel_g;
+typedef double vel_g;
 
 typedef enum {X, Y, Z, RMQ} dataDimension;
 
@@ -177,7 +185,7 @@ typedef struct node {
 } Node;
 
 typedef struct linkedList {
-    long count;
+    size_t count;
     Node *head;
 } LinkedList;
 // operations on linked list
@@ -198,6 +206,11 @@ EXAMPLE:
 
 */
 Node * jump(const Node * depart, long step);
+
+/*
+ * Get the tail of the signal
+ */
+Node * tail(LinkedList* list);
 
 /*
 Make a new Node for a sample.
@@ -401,7 +414,7 @@ acc meanSample(Sample * sample);
  * Calculate the mean of a sub series from the signal
  *  If count = -1 then calculate the mean for the whole array (100 terminated)
  */
-acc mean(acc * input, int count);
+acc mean(acc * input, node_index count);
 
 /**
  Calculate the SD of a sub series from the signal.
@@ -450,19 +463,54 @@ vel_g * simpsonSingle(LinkedList * signal, sample_th start, sample_th count, siz
 /**************************************************CAWAX ANALYSIS *******************************************/
 /*
 */
-#define SAMPLES_TO_JUMP_WINDOW_END 10
-#define SAMPLES_TO_JUMP_NEXT_WINDOW (SAMPLES_TO_JUMP_WINDOW_END / 2)
+//todo evaluation and testing
+#define WINDOW_SIZE_SECOND 1
+#define F_HZ 10
 
-typedef struct {
+#define WINDOW_SIZE_SAMPLES (F_HZ * WINDOW_SIZE_SECOND)
+#define NEXT_WINDOW_SAMPLES (WINDOW_SIZE_SAMPLES / 2)
+
+// file sample structure
+// [x:y]: action [x] performed for [y] second
+/**************************************************** INPUT SIGNAL STRUCTURE ********************************
+ *
+ *
+ *
+				[cal:5] - [stand:14] - [cal:5] - [walk:14] - [cal:5] - [lie:14] - [cal:5]
+ *
+ *
+ *
+*************************************************************************************************************/
+#define ORDER_STAND 1
+#define ORDER_WALK 2
+#define ORDER_LIE 3
+#define ORDER_N_A 4
+
+#define CALIBRATION_TIME_SECOND 5
+#define ACTION_TIME_SECOND 14
+#define NOISE_SECOND 2
+
+#define TOTAL_TIME_FOR_ACTION 19
+
+long action_start_sample(int action_order);
+long action_end_sample(int action_order);
+
+typedef struct _feature {
 	LinkedList * samples;
 	node_index windowStart;
 	node_index windowEnd;	
 	// features
-	acc mean_x;
-	acc stdDev_X;
+	acc mean_Y;
+	acc mean_RMQ;
+	acc stdDev_Y;
 	acc stdDev_RMQ_XYZ;
-	acc integral_X;
+	acc integral_Y;
 	acc integral_RMQ_XYZ;
+
+	int class;
+
+	struct _feature * next;
+
 	//todo expand (make use of secondary-dataDimension data - Y, Z) 
 } FeaturedWindow;
 
@@ -506,6 +554,34 @@ Analyse the subsignal windows.
 */
 posture analyse(FeaturedWindow * feature);
 
+FeaturedWindow * processSignal(Signal *signal);
+
+char * produceTrainDataFeatureString(FeaturedWindow *, BOOLEAN, int);
 
 /** End Section Analysis **/
+
+/** C4.5 algorithm specific config **/
+#define stem "cawax"
+#define TrainDataStemFile stem".data"
+#define TestDataStemFile stem"_Test.data"
+
+#define DO_OVERRIDE (1)
+#define NO_OVERRIDE (0)
+//todo doc
+void assignTrainedClass(FeaturedWindow * buf, int override);
+
+int classifyTarget(node_index index);
+
+#define CLASS_ORDER_TO_STRING(order) \
+									(order == ORDER_STAND ? "stand" : \
+                                     order == ORDER_WALK ? "walk" : \
+										order == ORDER_LIE ? "lie" : \
+										order == ORDER_N_A ? "n/a" : "null"\
+														)
+
+//todo doc
+void exportToC4_5Data(const char* filename, FeaturedWindow * buf, BOOLEAN isTest, BOOLEAN isNameStemReady);
+void exportToFullC4_5(const char * username);
+
+
 
