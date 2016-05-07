@@ -123,6 +123,8 @@ double cawaxInternalTimeDiff(INTERNAL_TIME arg1, INTERNAL_TIME arg2, int unitToM
 Define how the IMU will be attached to the users.
 This plays an important role in how sensor data will be interpreted and processed.
 See WAX9 Datasheet for more details.
+
+// not used
 */
 // X towards earth.
 #define TOWARDS_EARTH_COMPONENT 0x1
@@ -137,6 +139,8 @@ See WAX9 Datasheet for more details.
 Define the default bases against which signal components are processed.
 The default base is the average value at which the current state of movement is static (no significant movement)
 These default bases could be obtained by putting the IMU upright on a flat ground or letting the bearing user standing still.
+
+// not used
 */
 #define DEF_BASE_X 1 // TODO 
 #define DEF_BASE_Y 0 //TODO
@@ -359,9 +363,12 @@ int countLines(const char * filename);
 
 /*
 Read {count} lines from the csv file (starting from the first line) into a LinkedList struct.
+	fileName: the name of the file to be read
+	count: how many lines to read
+	linesRead: how many lines read
  - if {count} = {DEFAULT_PARAMETER_VALUE} then read the whole file.
 */
-LinkedList * readFile(const char * filename, int count,  int * linesRead);
+LinkedList * readFile(const char * fileName, int count,  int * linesRead);
 
 /** End Section Data reader **/
 
@@ -542,6 +549,9 @@ bit 3-4-5: decision
 	if lying
 		100: lying still
 		101: 'active' lyingtoStringFeature
+
+		not used. C4.5 used instead. 
+		//todo link
 		*/
 typedef int posture;
 
