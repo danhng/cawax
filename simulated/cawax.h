@@ -472,7 +472,7 @@ vel_g * simpsonSingle(LinkedList * signal, sample_th start, sample_th count, siz
 */
 //todo evaluation and testing
 #define WINDOW_SIZE_SECOND 1
-#define F_HZ 24 // sampling rate
+#define F_HZ 10 // sampling rate
 
 #define WINDOW_SIZE_SAMPLES (F_HZ * WINDOW_SIZE_SECOND)
 #define NEXT_WINDOW_SAMPLES (WINDOW_SIZE_SAMPLES / 2)

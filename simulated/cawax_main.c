@@ -11,11 +11,18 @@ int main(int argc, char *argv[]) {
 	char * userName = (char *)malloc(100);
 	if (argc == 1) {
 		printf(DEBUG_HEADER_WARN"Username not specified. Default to Michael Williamson.\n");
-		strcpy(userName, "DF");
+		strcpy(userName, "Michael");
 	}
-	else {
+	else if (argc == 2) {
+		printf(DEBUG_HEADER_INFO"Username specified: %s\n", argv[1]);
 		strcpy(userName, argv[1]);
 	}
+	else {
+		printf(DEBUG_HEADER_ERR"cawax requires one parameter which specifies the name of the user only. Aborting.\n");
+		return EXIT_FAILURE;
+
+	}
+
 	int linesRead = 0;
 	
 	char * trainFile = (char *)malloc(100);
