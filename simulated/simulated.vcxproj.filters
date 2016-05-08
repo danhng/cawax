@@ -38,25 +38,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cawax_datastructs.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cawax_maths.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="omapi.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="cawax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cawax_datareader.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cawax_analyst.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cawax_include.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
