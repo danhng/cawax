@@ -25,35 +25,35 @@ int testSimpson();
 int testTimeInternal();
 int test_toFeature();
 int test_processSignal();
-
-int main(void) {
-	//testMem();
-	//testRootMeanSquare();
-	//testMean();
-	//testStandardDeviation();
-	//testTimeFormat();
-	//testCountLines("saw10.csv");
-	//testReadFile("saw10.csv");
-	//testTimeDiff(1959312, 1981640);
-	//testTrapezoid(0.494282, -0.48618, INTERNAL_TIME_FROM_S(314,568726), INTERNAL_TIME_FROM_S(314, 668732), 1, 2);
-	//testGetComponent();
-	//testJump();
-
-	//testSimpsonSingle();
-	//testSimpson();
-	//testTimeInternal();
-
-	//test_toFeature();
-	test_processSignal();
-	printf("%li\n", action_start_sample(ORDER_STAND));
-	printf("%li\n", action_end_sample(ORDER_STAND));
-	printf("%li\n", action_start_sample(ORDER_WALK));
-	printf("%li\n", action_end_sample(ORDER_WALK));
-	printf("%li\n", action_start_sample(ORDER_LIE));
-	printf("%li\n", action_end_sample(ORDER_LIE));
-	getchar();
-
-}
+//
+//int main(void) {
+//	//testMem();
+//	//testRootMeanSquare();
+//	//testMean();
+//	//testStandardDeviation();
+//	//testTimeFormat();
+//	//testCountLines("saw10.csv");
+//	//testReadFile("saw10.csv");
+//	//testTimeDiff(1959312, 1981640);
+//	//testTrapezoid(0.494282, -0.48618, INTERNAL_TIME_FROM_S(314,568726), INTERNAL_TIME_FROM_S(314, 668732), 1, 2);
+//	//testGetComponent();
+//	//testJump();
+//
+//	//testSimpsonSingle();
+//	//testSimpson();
+//	//testTimeInternal();
+//
+//	//test_toFeature();
+//	test_processSignal();
+//	printf("%li\n", action_start_sample(ORDER_STAND));
+//	printf("%li\n", action_end_sample(ORDER_STAND));
+//	printf("%li\n", action_start_sample(ORDER_WALK));
+//	printf("%li\n", action_end_sample(ORDER_WALK));
+//	printf("%li\n", action_start_sample(ORDER_LIE));
+//	printf("%li\n", action_end_sample(ORDER_LIE));
+//	getchar();
+//
+//}
 
 int test_processSignal() {
 	int linesRead = 0;
@@ -62,7 +62,7 @@ int test_processSignal() {
 
 	LinkedList * testData = readFile("Michael_Williamson_Test.csv", 10, &linesRead);
 	exportToC4_5Data("cawax_test.data", processSignal(testData), TRUE, TRUE);
-	//freeLinkedList(signal);
+	freeLinkedList(signal);
 	return 0;
 }
 

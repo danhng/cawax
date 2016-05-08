@@ -33,6 +33,9 @@
     <ClCompile Include="cawax_time.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cawax_main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cawax_datastructs.h">
