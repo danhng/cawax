@@ -1,0 +1,37 @@
+Please follow the following instruction to run the program.
+
+Note: The program requires liblog4c dependency for debugging sections.
+
+1. Install C4.5 using the source code obtained on www.rulequest.com/Personal/
+Make sure the installation is in the path e.g. /usr/bin. Simply, you need not to specifiy any installation path while make_ing. make will put all binaries and libraries in the right places. 
+2. Make sure you are in the base of the project and change the directory to /simulated.
+	cd simulated
+3. Make sure the dataset files Michael_train.csv and Michael_Test.csv are in thedirectory. 
+4. Here there are two options. 
+4.1. You could choose to manually compile the program, if you don't wish to do so, head to the second option. 
+	make
+If everything goes right, make will provide an executable called "cawax" in the same directory. verify its creation by:
+	stat cawax
+Run the program with optional argument that specifies the name of the users whose datatset will be used to construct the decision tree. 
+	./cawax username
+If no username is specified, the default value is Michael which points to Michael's datatset.
+-> The program will now execute, performing all tasks indicated in the implementation section in the dissertation.
+
+Now, provided that you have the c4.5 ready. run
+	c4.5 cawax -v [verboseoption]
+The classification tree will then generated. 
+
+4.2. The fastest way to run the program is to execute the script run.sh, specifying the username as the only argument. It will automatically performs all necessary tasks leaving you with completely ready decision trees.
+
+5. Test
+Unfortunately, automated test is not yet suppored.
+However, data for it (extracted features) will have been already computed and output to cawax_test.data as per the implementation strategy.
+run 
+	consult cawax
+to start the test phase.
+The program will ask for necessary test values. It will stop as soon as it gathers enough information to infer the classification result.
+
+If you have any feedback or questionaire, please send it to 
+d.t.nguyen@newcastle.ac.uk
+
+Thank you.
